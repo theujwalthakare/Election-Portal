@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eMAS 2025 | Elite Masters Association of Students</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Project-wide stylesheet (global navbar + utilities) -->
+    <link rel="stylesheet" href="style.css">
+    <!-- <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #ef4444, #b91c1c);
+            -webkit-background-clip: text;
+            background-clip: text; /* standard property for compatibility */
+            -webkit-text-fill-color: transparent;
+        }
+        .hero-bg {
+            background-color: #020617;
+            background-image: radial-gradient(at 27% 37%, hsla(0, 84%, 60%, 0.1) 0px, transparent 50%), radial-gradient(at 97% 21%, hsla(0, 78%, 72%, 0.1) 0px, transparent 50%), radial-gradient(at 52% 99%, hsla(0, 88%, 61%, 0.1) 0px, transparent 50%), radial-gradient(at 10% 29%, hsla(0, 86%, 61%, 0.1) 0px, transparent 50%), radial-gradient(at 97% 96%, hsla(0, 70%, 74%, 0.1) 0px, transparent 50%), radial-gradient(at 33% 50%, hsla(0, 77%, 73%, 0.1) 0px, transparent 50%), radial-gradient(at 79% 53%, hsla(0, 78%, 79%, 0.1) 0px, transparent 50%);
+        }
+        .blinking-cursor {
+            font-weight: 500;
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink {
+            from, to { color: transparent }
+            50% { color: #ef4444; }
+        }
+       .logo-container .fa-canadian-maple-leaf, .logo-container .e-logo {
+            transition: transform 0.3s ease-in-out, filter 0.3s ease-in-out;
+       }
+       .logo-container:hover .fa-canadian-maple-leaf, .logo-container:hover .e-logo {
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 8px rgba(34, 197, 94, 0.6));
+       }
+       .logo-container:hover .e-logo {
+           filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.6));
+       }
+    </style> -->
+</head>
+<body class="bg-slate-900 text-gray-300">
+
+    <!-- Header -->
+    <header class="gp-navbar bg-slate-900/80 backdrop-blur-sm fixed top-0 left-0 right-0 z-50 border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <a href="#" class="flex items-center space-x-2 logo-container">
+                        <!-- Font Awesome Logo -->
+                        <div class="relative w-4 h-10 flex items-center justify-center">
+                            <i class="fab fa-canadian-maple-leaf text-green-500 text-4xl"></i>
+                            <span class="e-logo absolute text-red-600 font-black italic text-3xl" style="top: 50%; left: 50%; transform: translate(-46%, -50%);">e</span>
+                        </div>
+                        <span class="text-white font-bold text-xl">MAS<span class="text-gray-400 font-semibold">2025</span></span>
+                    </a>
+                </div>
+                <nav class="hidden md:flex md:space-x-8 gp-navbar__links">
+                    <a href="#about" class="text-gray-300 hover:text-white transition-colors duration-200">About</a>
+                    <a href="#team" class="text-gray-300 hover:text-white transition-colors duration-200">The Team</a>
+                    <a href="#legacy" class="text-gray-300 hover:text-white transition-colors duration-200">Our Legacy</a>
+                    <a href="#events" class="text-gray-300 hover:text-white transition-colors duration-200">Events</a>
+                    <a href="election.html" class="text-white font-semibold bg-red-600 px-3 py-1.5 rounded-lg transition-all duration-200 hover:bg-red-700">Election 🗳️</a>
+                </nav>
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="gp-navbar__toggle text-white p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+                        <i data-lucide="menu" id="menu-open-icon"></i>
+                        <i data-lucide="x" id="menu-close-icon" class="hidden"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden gp-mobile-menu">
+            <nav class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#about" class="text-gray-300 hover:bg-slate-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">About</a>
+                <a href="#team" class="text-gray-300 hover:bg-slate-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">The Team</a>
+                <a href="#legacy" class="text-gray-300 hover:bg-slate-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Our Legacy</a>
+                <a href="#events" class="text-gray-300 hover:bg-slate-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Events</a>
+                <a href="election.html" class="text-white bg-red-600 hover:bg-red-700 block px-3 py-2 rounded-md text-base font-medium">Election 🗳️</a>
+            </nav>
+        </div>
+    </header>
+    
+    <main>
+        <!-- Hero Section -->
+        <section class="min-h-screen flex items-center justify-center hero-bg pt-16">
+            <div class="text-center max-w-4xl mx-auto px-4">
+                <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight mb-4">
+                    Engineering the Future. <br class="sm:hidden">
+                    <span id="animated-text" class="gradient-text"></span><span class="blinking-cursor">|</span>
+                </h1>
+                <p class="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-8">
+                    Welcome to the Elite Masters Association of Students (eMAS) 2025. We are the architects of tomorrow, fostering innovation, leadership, and a vibrant student community through technology exploration and quality education.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <a href="#events" class="bg-red-600 text-white font-semibold px-8 py-3 rounded-lg hover:bg-red-700 transition-all duration-300 shadow-lg shadow-red-600/40">
+                        Explore Events
+                    </a>
+                    <a href="election.html" class="bg-slate-700 text-white font-semibold px-8 py-3 rounded-lg hover:bg-slate-600 transition-all duration-300">
+                        Elections
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Us & Objectives -->
+        <section id="about" class="py-20 sm:py-28 bg-slate-900">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-white">Our Vision for 2025</h2>
+                    <p class="mt-4 text-lg text-gray-400">We are dedicated to building a dynamic and supportive environment for every student.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <!-- Objective Card 1 -->
+                    <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
+                        <i data-lucide="lightbulb" class="w-10 h-10 mb-4 text-red-500"></i>
+                        <h3 class="text-xl font-semibold text-white mb-2">Enrich Student Life</h3>
+                        <p class="text-gray-400">To create and promote social, cultural, and educational programs that enrich the student experience.</p>
+                    </div>
+                    <!-- Objective Card 2 -->
+                    <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
+                        <i data-lucide="users" class="w-10 h-10 mb-4 text-red-500"></i>
+                        <h3 class="text-xl font-semibold text-white mb-2">Build Community</h3>
+                        <p class="text-gray-400">Develop a strong sense of community among students, fostering collaboration and mutual respect.</p>
+                    </div>
+                    <!-- Objective Card 3 -->
+                    <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
+                        <i data-lucide="shield-check" class="w-10 h-10 mb-4 text-red-500"></i>
+                        <h3 class="text-xl font-semibold text-white mb-2">Promote Student Welfare</h3>
+                        <p class="text-gray-400">Champion the general welfare of students and advocate for their interests within the college community.</p>
+                    </div>
+                    <!-- Objective Card 4 -->
+                    <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
+                        <i data-lucide="megaphone" class="w-10 h-10 mb-4 text-red-500"></i>
+                        <h3 class="text-xl font-semibold text-white mb-2">Represent Your Voice</h3>
+                        <p class="text-gray-400">Act as the official student governance body, ensuring student issues and interests are represented effectively.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Meet the Team Section -->
+        <section id="team" class="py-20 sm:py-28">
+            <!-- <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-white">Meet the 2025 Council</h2>
+                    <p class="mt-4 text-lg text-gray-400">The driving force behind our initiatives. Passionate leaders committed to student success.</p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    Team Member Card
+                    <div class="bg-slate-800 rounded-lg p-6 text-center border border-slate-700 hover:-translate-y-2 transition-transform duration-300">
+                        <img class="w-28 h-28 rounded-full mx-auto mb-4 object-cover" src="https://placehold.co/200x200/1e293b/94a3b8?text=Pres" alt="President photo">
+                        <h3 class="text-xl font-bold text-white">Aarav Sharma</h3>
+                        <p class="gradient-text font-semibold">President</p>
+                        <p class="text-sm text-gray-400 mt-2">Visionary leadership and strategic planning for all eMAS activities.</p>
+                    </div>
+                     Team Member Card
+                    <div class="bg-slate-800 rounded-lg p-6 text-center border border-slate-700 hover:-translate-y-2 transition-transform duration-300">
+                        <img class="w-28 h-28 rounded-full mx-auto mb-4 object-cover" src="https://placehold.co/200x200/1e293b/94a3b8?text=VP" alt="Vice President photo">
+                        <h3 class="text-xl font-bold text-white">Priya Patel</h3>
+                        <p class="gradient-text font-semibold">Vice President</p>
+                        <p class="text-sm text-gray-400 mt-2">Coordinating student activities and fostering inter-departmental collaboration.</p>
+                    </div>
+                     Team Member Card
+                    <div class="bg-slate-800 rounded-lg p-6 text-center border border-slate-700 hover:-translate-y-2 transition-transform duration-300">
+                        <img class="w-28 h-28 rounded-full mx-auto mb-4 object-cover" src="https://placehold.co/200x200/1e293b/94a3b8?text=Treas" alt="Treasurer photo">
+                        <h3 class="text-xl font-bold text-white">Rohan Das</h3>
+                        <p class="gradient-text font-semibold">Treasurer</p>
+                        <p class="text-sm text-gray-400 mt-2">Managing budgets and financial planning to bring our events to life.</p>
+                    </div>
+                     Team Member Card
+                    <div class="bg-slate-800 rounded-lg p-6 text-center border border-slate-700 hover:-translate-y-2 transition-transform duration-300">
+                        <img class="w-28 h-28 rounded-full mx-auto mb-4 object-cover" src="https://placehold.co/200x200/1e293b/94a3b8?text=Coord" alt="Coordinator photo">
+                        <h3 class="text-xl font-bold text-white">Prof. S. Joshi</h3>
+                        <p class="gradient-text font-semibold">eMAS Coordinator</p>
+                        <p class="text-sm text-gray-400 mt-2">Guiding and mentoring the student committee towards achieving its goals.</p>
+                    </div>
+                </div>
+            </div> -->
+        </section>
+        
+        <!-- Our Legacy Section -->
+        <section id="legacy" class="py-20 sm:py-28 bg-slate-900">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold text-white">A Legacy of Leadership & Innovation</h2>
+                    <p class="mt-4 text-lg text-gray-400 max-w-3xl mx-auto">For over a decade, eMAS has been the cornerstone of student life, building a rich history of impactful events and nurturing future leaders.</p>
+                </div>
+
+                <!-- Past Events Showcase -->
+                <div class="mb-16">
+                    <h3 class="text-2xl font-bold text-white text-center mb-8">Milestones Through the Years</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <!-- Legacy Event 1 -->
+                        <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
+                            <p class="text-sm text-red-500 font-semibold mb-2">2014-15</p>
+                            <h4 class="text-lg font-semibold text-white mb-2">Mozilla Web Maker Workshop</h4>
+                            <p class="text-gray-400 text-sm">Empowering students with web development skills through hands-on training with Mozilla's tools.</p>
+                        </div>
+                        <!-- Legacy Event 2 -->
+                        <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
+                            <p class="text-sm text-red-500 font-semibold mb-2">2015-16</p>
+                            <h4 class="text-lg font-semibold text-white mb-2">RakshaBandhan for Kumbh-Mela Police</h4>
+                            <p class="text-gray-400 text-sm">A heartfelt social initiative to honor and appreciate the police force on duty during the Kumbh Mela.</p>
+                        </div>
+                        <!-- Legacy Event 3 -->
+                        <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
+                            <p class="text-sm text-red-500 font-semibold mb-2">2016-17</p>
+                            <h4 class="text-lg font-semibold text-white mb-2">Seminar on Cyber Security</h4>
+                            <p class="text-gray-400 text-sm">Providing crucial insights into cybersecurity, its importance, and career opportunities with industry experts.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hall of Fame -->
+                <!-- <div>
+                    <h3 class="text-2xl font-bold text-white text-center mb-8">Past Presidents: Hall of Fame</h3>
+                    <div class="max-w-2xl mx-auto">
+                        <ul class="space-y-4">
+                            <li class="bg-slate-800 p-4 rounded-lg flex justify-between items-center border border-slate-700">
+                                <p class="font-semibold text-white">Swapnil Hadole</p>
+                                <p class="text-gray-400">2014-15</p>
+                            </li>
+                             <li class="bg-slate-800 p-4 rounded-lg flex justify-between items-center border border-slate-700">
+                                <p class="font-semibold text-white">Sagar Kulkarni</p>
+                                <p class="text-gray-400">2015-16</p>
+                            </li>
+                             <li class="bg-slate-800 p-4 rounded-lg flex justify-between items-center border border-slate-700">
+                                <p class="font-semibold text-white">Supriya Gaikwad</p>
+                                <p class="text-gray-400">2016-17</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div> -->
+
+            </div>
+        </section>
+
+        <!-- Upcoming Events Section -->
+<section id="events" class="py-20 sm:py-28 bg-slate-900/70 hero-bg">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <div class="mb-12">
+      <h2 class="text-3xl md:text-4xl font-bold text-white">Upcoming Events - Fall 2025</h2>
+      <p class="mt-4 text-lg text-gray-400">Stay tuned for upcoming activities and announcements from EMAS.</p>
+    </div>
+
+    <!-- Placeholder for no events -->
+    <div class="bg-slate-800/60 border border-slate-700 rounded-xl p-10 shadow-lg max-w-2xl mx-auto">
+      <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto mb-4 text-gray-500" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M8 2v4"></path>
+        <path d="M16 2v4"></path>
+        <rect width="18" height="18" x="3" y="4" rx="2"></rect>
+        <path d="M3 10h18"></path>
+      </svg>
+      <h3 class="text-xl font-semibold text-white mb-2">No Upcoming Events</h3>
+      <p class="text-gray-400 mb-4">
+        We currently don’t have any scheduled events. Please check back soon or visit the 
+        <a href="election.html" class="text-red-500 hover:underline">Election Page</a> to participate in ongoing elections.
+      </p>
+      <a href="election.html" class="inline-block bg-red-600 text-white font-semibold px-6 py-2.5 rounded-lg hover:bg-red-700 transition-all duration-300">
+        Go to Election Portal
+      </a>
+    </div>
+  </div>
+</section>
+
+
+        <!-- Join Us Section -->
+        <section id="join" class="py-20 sm:py-28">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold text-white">Become a Part of the Movement</h2>
+                <p class="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">
+                    Whether you have an idea for an event, want to volunteer, or simply stay updated, we want to hear from you. Join us in shaping an unforgettable year for our student community.
+                </p>
+                <div class="mt-8">
+                     <a href="mailto:emas2025.contact@university.edu" class="bg-red-600 text-white font-semibold px-8 py-4 rounded-lg hover:bg-red-700 transition-all duration-300 shadow-lg shadow-red-600/40 text-lg">
+                        Contact the Council
+                    </a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <div class="flex justify-center space-x-6 md:order-2">
+                    <!-- Add social media links here -->
+                    <a href="#" class="text-gray-400 hover:text-white">
+                        <i data-lucide="linkedin"></i>
+                    </a>
+                     <a href="#" class="text-gray-400 hover:text-white">
+                        <i data-lucide="instagram"></i>
+                    </a>
+                     <a href="#" class="text-gray-400 hover:text-white">
+                        <i data-lucide="twitter"></i>
+                    </a>
+                </div>
+                <div class="mt-8 md:mt-0 md:order-1">
+                    <p class="text-center text-base text-gray-400">
+                        &copy; 2025 Elite Masters Association of Students (eMAS). All rights reserved.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Typing animation
+        const animatedText = document.getElementById('animated-text');
+        const phrases = ["Leading the Present.", "Building Community.", "Fostering Innovation.", "Architects of Tomorrow."];
+        let phraseIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+
+        function type() {
+            if (!animatedText) return;
+            const currentPhrase = phrases[phraseIndex];
+            
+            if (isDeleting) {
+                // Deleting text
+                animatedText.textContent = currentPhrase.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                // Typing text
+                animatedText.textContent = currentPhrase.substring(0, charIndex + 1);
+                charIndex++;
+            }
+
+            let typeSpeed = isDeleting ? 75 : 150;
+
+            if (!isDeleting && charIndex === currentPhrase.length) {
+                // Pause at the end of the phrase
+                typeSpeed = 2000;
+                isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                // Finished deleting, move to next phrase
+                isDeleting = false;
+                phraseIndex = (phraseIndex + 1) % phrases.length;
+                typeSpeed = 500;
+            }
+
+            setTimeout(type, typeSpeed);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            if (animatedText) {
+                setTimeout(type, 250);
+            }
+
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const menuOpenIcon = document.getElementById('menu-open-icon');
+            const menuCloseIcon = document.getElementById('menu-close-icon');
+
+            mobileMenuButton.addEventListener('click', () => {
+                const isMenuOpen = !mobileMenu.classList.contains('hidden');
+                mobileMenu.classList.toggle('hidden');
+                menuOpenIcon.classList.toggle('hidden', !isMenuOpen);
+                menuCloseIcon.classList.toggle('hidden', isMenuOpen);
+            });
+
+            // Close mobile menu when a link is clicked
+            document.querySelectorAll('#mobile-menu a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                    menuOpenIcon.classList.remove('hidden');
+                    menuCloseIcon.classList.add('hidden');
+                });
+            });
+        });
+
+    </script>
+</body>
+</html>
+

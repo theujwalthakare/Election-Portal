@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EMAS Election 2025 | Vote Now</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- SweetAlert2 for beautiful alerts -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Project-wide stylesheet -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #ef4444, #b91c1c);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .logo-container .fa-canadian-maple-leaf, .logo-container .e-logo {
+            transition: transform 0.3s ease-in-out, filter 0.3s ease-in-out;
+        }
+        .logo-container:hover .fa-canadian-maple-leaf, .logo-container:hover .e-logo {
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 8px rgba(34, 197, 94, 0.6));
+        }
+        .logo-container:hover .e-logo {
+            filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.6));
+        }
+        
+        /* Modal Animations */
+        .modal-backdrop {
+            animation: fadeIn 0.3s ease-out;
+        }
+        .modal-content {
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideIn {
+            from { 
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Position Card Hover Effects */
+        .position-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .position-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(239, 68, 68, 0.2);
+        }
+
+        .position-card__header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+        }
+
+        .position-card__icon {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(239, 68, 68, 0.16);
+        }
+
+        .position-card__body {
+            margin-top: 1.25rem;
+        }
+
+        .position-card__title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 0.35rem;
+        }
+
+        .position-card__body p {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            line-height: 1.55rem;
+            margin: 0;
+            display: -webkit-box;
+            line-clamp: 3;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .position-card__meta {
+            margin-top: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+        }
+
+        .position-card__meta-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .position-card__meta-info span:first-child {
+            color: #cbd5f5;
+        }
+
+        .position-card__cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: #f87171;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .candidate-card {
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .candidate-card:active {
+            transform: scale(0.99);
+        }
+        
+        /* Voted Badge */
+        .voted-badge {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        /* Disabled state for voted positions */
+        .position-card.voted {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        .position-card.voted:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .candidate-selection-footer button[disabled] {
+            pointer-events: none;
+        }
+
+        @media (max-width: 640px) {
+            .candidate-modal-content {
+                padding: 1.75rem;
+                border-radius: 1.25rem;
+                max-height: calc(100vh - 2rem);
+                display: flex;
+                flex-direction: column;
+            }
+
+            .candidate-scroll-area {
+                flex: 1 1 auto;
+                overflow-y: auto;
+                margin: 0 -0.25rem;
+                padding: 0 0.25rem;
+                scroll-padding-bottom: 4.5rem;
+                max-height: calc(100vh - 12.5rem);
+            }
+
+            .registration-modal-content {
+                padding: 1.5rem;
+                border-radius: 1.25rem;
+            }
+
+            .candidate-selection-footer {
+                position: sticky;
+                bottom: 0;
+                margin: 1.5rem -1.75rem -1.75rem;
+                padding: 1rem 1.75rem 1.5rem;
+                background: linear-gradient(180deg, rgba(15,23,42,0.98), rgba(15,23,42,0.92));
+                border-top: 1px solid rgba(148,163,184,0.12);
+                backdrop-filter: blur(6px);
+                box-shadow: 0 -8px 24px rgba(15,23,42,0.45);
+                border-bottom-left-radius: 1.25rem;
+                border-bottom-right-radius: 1.25rem;
+            }
+
+            .candidate-selection-footer button {
+                height: 3.25rem;
+                font-size: 0.95rem;
+            }
+
+            .position-card {
+                padding: 1.05rem;
+                border-radius: 1.25rem;
+            }
+
+            .position-card__icon {
+                width: 2.75rem;
+                height: 2.75rem;
+                border-radius: 1rem;
+            }
+
+            .position-card__title {
+                font-size: 1.1rem;
+                line-height: 1.5rem;
+            }
+
+            .position-card__meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.6rem;
+            }
+
+            .position-card__cta {
+                width: 100%;
+                justify-content: space-between;
+                border-top: 1px dashed rgba(239, 68, 68, 0.25);
+                padding-top: 0.65rem;
+                margin-top: 0.35rem;
+            }
+
+            .candidate-card {
+                padding: 1rem;
+                border-radius: 1rem;
+            }
+
+            .candidate-card img {
+                width: 3.25rem;
+                height: 3.25rem;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-gray-300">
+
+    <!-- Header -->
+    <header class="gp-navbar bg-slate-900/80 backdrop-blur-sm fixed top-0 left-0 right-0 z-50 border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <a href="index.html" class="flex items-center space-x-2 logo-container">
+                        <!-- Font Awesome Logo -->
+                        <div class="relative w-4 h-10 flex items-center justify-center">
+                            <i class="fab fa-canadian-maple-leaf text-green-500 text-4xl"></i>
+                            <span class="e-logo absolute text-red-600 font-black italic text-3xl" style="top: 50%; left: 50%; transform: translate(-46%, -50%);">e</span>
+                        </div>
+                        <span class="text-white font-bold text-xl">MAS<span class="text-gray-400 font-semibold">2025</span></span>
+                    </a>
+                </div>
+                <nav class="hidden md:flex md:space-x-8 gp-navbar__links">
+                    <a href="index.html#about" class="text-gray-300 hover:text-white transition-colors duration-200">About</a>
+                    <a href="index.html#team" class="text-gray-300 hover:text-white transition-colors duration-200">The Team</a>
+                    <a href="index.html#legacy" class="text-gray-300 hover:text-white transition-colors duration-200">Our Legacy</a>
+                    <a href="index.html#events" class="text-gray-300 hover:text-white transition-colors duration-200">Events</a>
+                    <a href="election.html" class="text-white font-semibold bg-red-600/20 px-3 py-1.5 rounded-lg transition-colors duration-200 active">Election</a>
+                </nav>
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="gp-navbar__toggle text-white p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+                        <i data-lucide="menu" id="menu-open-icon"></i>
+                        <i data-lucide="x" id="menu-close-icon" class="hidden"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden gp-mobile-menu">
+            <nav class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="index.html#about" class="text-gray-300 hover:bg-slate-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">About</a>
+                <a href="index.html#team" class="text-gray-300 hover:bg-slate-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">The Team</a>
+                <a href="index.html#legacy" class="text-gray-300 hover:bg-slate-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Our Legacy</a>
+                <a href="index.html#events" class="text-gray-300 hover:bg-slate-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Events</a>
+                <a href="election.html" class="text-white bg-red-600 block px-3 py-2 rounded-md text-base font-medium">Election</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pt-16">
+        <!-- Hero Section -->
+        <section class="hero-bg py-20 sm:py-28">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <div class="mb-4">
+                    <span class="inline-block bg-red-600/10 text-red-400 px-4 py-2 rounded-full text-sm font-semibold mb-4">
+                        🗳️ Live Now
+                    </span>
+                </div>
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-4">
+                    EMAS <span class="gradient-text">Election 2025</span>
+                </h1>
+                <p class="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-8">
+                    Cast your vote and shape the future of our student community. Your voice matters!
+                </p>
+                <div id="voter-info" class="hidden bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-lg p-4 max-w-md mx-auto">
+                    <p class="text-sm text-gray-400">Voting as:</p>
+                    <p class="text-white font-semibold" id="voter-name-display"></p>
+                    <p class="text-gray-400 text-sm" id="voter-roll-display"></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Positions Grid Section -->
+        <section class="py-20 bg-slate-900">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Select a Position to Vote</h2>
+                    <p class="text-gray-400">Click on any position to view candidates and cast your vote</p>
+                </div>
+
+                <!-- Positions Grid -->
+                <div id="positions-grid" class="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
+                    <!-- Positions will be dynamically loaded here -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <div class="flex justify-center space-x-6 md:order-2">
+                    <a href="#" class="text-gray-400 hover:text-white">
+                        <i data-lucide="linkedin"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white">
+                        <i data-lucide="instagram"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white">
+                        <i data-lucide="twitter"></i>
+                    </a>
+                </div>
+                <div class="mt-8 md:mt-0 md:order-1">
+                    <p class="text-center text-base text-gray-400">
+                        &copy; 2025 Elite Masters Association of Students (eMAS). All rights reserved.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Registration Modal -->
+    <div id="registration-modal" class="fixed inset-0 z-[100] hidden">
+        <div class="modal-backdrop fixed inset-0 bg-black/70 backdrop-blur-sm"></div>
+        <div class="fixed inset-0 flex items-center justify-center p-4">
+            <div class="modal-content registration-modal-content bg-slate-800 border border-slate-700 rounded-xl shadow-2xl max-w-md w-full p-8 relative">
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 bg-red-600/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i data-lucide="user-check" class="w-8 h-8 text-red-500"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white mb-2">Voter Registration</h2>
+                    <p class="text-gray-400">Please enter your details to proceed with voting</p>
+                </div>
+                
+                <form id="registration-form" class="space-y-4">
+                    <div>
+                        <label for="voter-name" class="block text-sm font-medium text-gray-300 mb-2">Full Name</label>
+                        <input 
+                            type="text" 
+                            id="voter-name" 
+                            required
+                            placeholder="Enter your full name"
+                            class="w-full px-4 py-3 bg-slate-900 border border-slate-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                        >
+                    </div>
+                    
+                    <div>
+                        <label for="voter-roll" class="block text-sm font-medium text-gray-300 mb-2">Roll Number</label>
+                        <input 
+                            type="text" 
+                            id="voter-roll" 
+                            required
+                            placeholder="Enter your roll number"
+                            class="w-full px-4 py-3 bg-slate-900 border border-slate-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                        >
+                    </div>
+                    
+                    <button 
+                        type="submit" 
+                        class="w-full bg-red-600 text-white font-semibold px-6 py-3 rounded-lg hover:bg-red-700 transition-all duration-300 shadow-lg shadow-red-600/40"
+                    >
+                        Register & Continue
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Candidates Modal -->
+    <div id="candidates-modal" class="fixed inset-0 z-[100] hidden">
+        <div class="modal-backdrop fixed inset-0 bg-black/70 backdrop-blur-sm" onclick="closeCandidatesModal()"></div>
+        <div class="fixed inset-0 flex items-center justify-center p-4 overflow-y-auto">
+            <div class="modal-content candidate-modal-content bg-slate-800 border border-slate-700 rounded-xl shadow-2xl max-w-2xl w-full p-6 sm:p-8 my-8 relative">
+                <button 
+                    onclick="closeCandidatesModal()" 
+                    class="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
+                >
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+                
+                <div class="mb-6">
+                    <h2 class="text-2xl sm:text-3xl font-bold text-white mb-2" id="modal-position-title"></h2>
+                    <p class="text-gray-400">Select your preferred candidate</p>
+                </div>
+                
+                <div id="candidates-list" class="space-y-4 candidate-scroll-area">
+                    <!-- Candidates will be dynamically loaded here -->
+                </div>
+                <div id="candidate-selection-footer" class="candidate-selection-footer mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <p id="candidate-selection-status" class="text-sm text-gray-400 hidden" aria-live="polite"></p>
+                    <button id="candidate-submit-button" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-semibold px-6 py-2.5 rounded-lg transition" disabled>
+                        <i data-lucide="check" class="w-4 h-4"></i>
+                        Submit selection
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase and Application Script -->
+    <script type="module">
+        import { db, ref, set, get, onValue } from './firebase.js';
+
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuOpenIcon = document.getElementById('menu-open-icon');
+        const menuCloseIcon = document.getElementById('menu-close-icon');
+        const positionsGrid = document.getElementById('positions-grid');
+        const candidateSelectionStatus = document.getElementById('candidate-selection-status');
+        const candidateSubmitButton = document.getElementById('candidate-submit-button');
+
+        mobileMenuButton.addEventListener('click', () => {
+            const isMenuOpen = !mobileMenu.classList.contains('hidden');
+            mobileMenu.classList.toggle('hidden');
+            menuOpenIcon.classList.toggle('hidden', !isMenuOpen);
+            menuCloseIcon.classList.toggle('hidden', isMenuOpen);
+        });
+
+        // Close mobile menu when a link is clicked
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                menuOpenIcon.classList.remove('hidden');
+                menuCloseIcon.classList.add('hidden');
+            });
+        });
+
+        if (candidateSubmitButton) {
+            candidateSubmitButton.disabled = true;
+            candidateSubmitButton.classList.add('opacity-50', 'cursor-not-allowed', 'pointer-events-none');
+            candidateSubmitButton.setAttribute('aria-disabled', 'true');
+            candidateSubmitButton.addEventListener('click', () => submitSelectedCandidates());
+        }
+
+        const state = {
+            positions: {},
+            loadingPositions: true
+        };
+
+        let currentVoter = null;
+        let votedPositions = {};
+
+        const selectionState = {
+            positionKey: null,
+            seats: 1,
+            selected: new Set(),
+            candidates: {}
+        };
+
+        function resetCandidateSelection() {
+            selectionState.positionKey = null;
+            selectionState.seats = 1;
+            selectionState.selected = new Set();
+            selectionState.candidates = {};
+            if (candidateSelectionStatus) {
+                candidateSelectionStatus.textContent = '';
+                candidateSelectionStatus.classList.add('hidden');
+            }
+            if (candidateSubmitButton) {
+                candidateSubmitButton.disabled = true;
+                candidateSubmitButton.classList.add('opacity-50', 'cursor-not-allowed', 'pointer-events-none');
+                candidateSubmitButton.setAttribute('aria-disabled', 'true');
+            }
+        }
+
+        function updateCandidateSelectionUI() {
+            if (!candidateSelectionStatus) {
+                return;
+            }
+
+            const selectedCount = selectionState.selected.size;
+            const seats = selectionState.seats;
+            const seatLabel = seats === 1 ? 'candidate' : 'candidates';
+            const isMultiSeat = seats > 1;
+
+            if (isMultiSeat) {
+                candidateSelectionStatus.textContent = `Selected ${selectedCount} of ${seats} ${seatLabel}. Submit when you're happy with your picks.`;
+                candidateSelectionStatus.classList.remove('hidden');
+
+                document.querySelectorAll('[data-role="selection-indicator"]').forEach((indicatorEl) => {
+                    const parentButton = indicatorEl.closest('[data-candidate-id]');
+                    const candidateId = parentButton ? parentButton.dataset.candidateId : null;
+                    const isSelectedCandidate = candidateId ? selectionState.selected.has(candidateId) : false;
+                    if (isSelectedCandidate) {
+                        indicatorEl.textContent = `Selected (${selectedCount}/${seats})`;
+                    } else {
+                        const remaining = Math.max(0, seats - selectedCount);
+                        indicatorEl.textContent = remaining > 0
+                            ? `Tap to select (${remaining} left)`
+                            : 'Selection full';
+                    }
+                    indicatorEl.classList.toggle('text-red-400', isSelectedCandidate);
+                    indicatorEl.classList.toggle('text-gray-400', !isSelectedCandidate);
+                });
+            } else {
+                candidateSelectionStatus.textContent = selectedCount === 0
+                    ? 'Tap a candidate to choose them, then submit.'
+                    : 'Looks good! Submit your vote when ready.';
+                candidateSelectionStatus.classList.remove('hidden');
+
+                document.querySelectorAll('[data-role="selection-indicator"]').forEach((indicatorEl) => {
+                    const parentButton = indicatorEl.closest('[data-candidate-id]');
+                    const candidateId = parentButton ? parentButton.dataset.candidateId : null;
+                    const isSelectedCandidate = candidateId ? selectionState.selected.has(candidateId) : false;
+                    indicatorEl.textContent = isSelectedCandidate ? 'Selected' : 'Tap to select';
+                    indicatorEl.classList.toggle('text-red-400', isSelectedCandidate);
+                    indicatorEl.classList.toggle('text-gray-400', !isSelectedCandidate);
+                });
+            }
+
+            if (candidateSubmitButton) {
+                const validSelection = selectedCount > 0 && selectedCount <= seats;
+                candidateSubmitButton.disabled = !validSelection;
+                candidateSubmitButton.classList.toggle('opacity-50', !validSelection);
+                candidateSubmitButton.classList.toggle('cursor-not-allowed', !validSelection);
+                candidateSubmitButton.classList.toggle('pointer-events-none', !validSelection);
+                candidateSubmitButton.setAttribute('aria-disabled', String(!validSelection));
+            }
+        }
+
+        function toggleCandidateSelection(candidateId, cardElement) {
+            const seats = selectionState.seats;
+
+            const currentlySelected = selectionState.selected.has(candidateId);
+
+            if (currentlySelected) {
+                selectionState.selected.delete(candidateId);
+                cardElement.classList.remove('ring-2', 'ring-red-500', 'bg-slate-900/80');
+                cardElement.classList.add('bg-slate-900');
+            } else {
+                if (selectionState.selected.size >= seats) {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Selection limit reached',
+                        text: `You can select up to ${seats} candidate${seats === 1 ? '' : 's'} for this position.`,
+                        background: '#1e293b',
+                        color: '#fff'
+                    });
+                    updateCandidateSelectionUI();
+                    return;
+                }
+                selectionState.selected.add(candidateId);
+                cardElement.classList.add('ring-2', 'ring-red-500', 'bg-slate-900/80');
+                cardElement.classList.remove('bg-slate-900');
+            }
+
+            const isSelected = selectionState.selected.has(candidateId);
+            cardElement.setAttribute('aria-pressed', String(isSelected));
+            const indicator = cardElement.querySelector('[data-role="selection-indicator"]');
+            if (indicator) {
+                if (selectionState.seats > 1) {
+                    const selectedCount = selectionState.selected.size;
+                    const remaining = Math.max(0, selectionState.seats - selectedCount);
+                    indicator.textContent = isSelected
+                        ? `Selected (${selectedCount}/${selectionState.seats})`
+                        : remaining > 0
+                            ? `Tap to select (${remaining} left)`
+                            : 'Selection full';
+                } else {
+                    indicator.textContent = isSelected ? 'Selected' : 'Tap to select';
+                }
+                indicator.classList.toggle('text-red-400', isSelected);
+                indicator.classList.toggle('text-gray-400', !isSelected);
+            }
+
+            updateCandidateSelectionUI();
+        }
+
+        async function submitSelectedCandidates() {
+            if (!currentVoter) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Not Registered',
+                    text: 'Please register first',
+                    background: '#1e293b',
+                    color: '#fff'
+                });
+                return;
+            }
+
+            if (!selectionState.positionKey || selectionState.selected.size === 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'No candidates selected',
+                    text: 'Select at least one candidate before submitting.',
+                    background: '#1e293b',
+                    color: '#fff'
+                });
+                return;
+            }
+
+            const seats = selectionState.seats;
+            if (selectionState.selected.size > seats) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Too many selections',
+                    text: `You may choose up to ${seats} candidate${seats === 1 ? '' : 's'}.`,
+                    background: '#1e293b',
+                    color: '#fff'
+                });
+                return;
+            }
+
+            const selectedCandidates = Array.from(selectionState.selected).map((candidateId) => selectionState.candidates[candidateId]).filter(Boolean);
+            if (selectedCandidates.length === 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Submission failed',
+                    text: 'Unable to locate candidate details. Please try again.',
+                    background: '#1e293b',
+                    color: '#fff'
+                });
+                return;
+            }
+
+            const positionKey = selectionState.positionKey;
+            const summaryNames = selectedCandidates.map((candidate) => candidate.name ?? 'Candidate').join(', ');
+
+            const confirm = await Swal.fire({
+                title: seats > 1 ? 'Confirm your selections' : 'Confirm your vote',
+                html: `Are you sure you want to vote for <strong>${summaryNames}</strong>?<br><small class="text-gray-400">This action cannot be undone.</small>`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: seats > 1 ? 'Submit votes' : 'Cast vote',
+                cancelButtonText: 'Cancel',
+                background: '#1e293b',
+                color: '#fff'
+            });
+
+            if (!confirm.isConfirmed) {
+                return;
+            }
+
+            try {
+                const timestamp = new Date().toISOString();
+                const votesPayload = {};
+                selectedCandidates.forEach((candidate) => {
+                    const candidateId = candidate.id ?? candidate.name ?? `candidate-${positionKey}`;
+                    votesPayload[candidateId] = {
+                        voterName: currentVoter.name,
+                        voterRoll: currentVoter.roll,
+                        candidateId,
+                        candidateName: candidate.name ?? 'Candidate',
+                        position: positionKey,
+                        timestamp
+                    };
+                });
+
+                const voteRef = ref(db, `votes/${positionKey}/${currentVoter.roll}`);
+                await set(voteRef, votesPayload);
+
+                votedPositions[positionKey] = votesPayload;
+
+                document.getElementById('candidates-modal').classList.add('hidden');
+                resetCandidateSelection();
+
+                Swal.fire({
+                    icon: 'success',
+                    title: seats > 1 ? 'Votes registered!' : 'Vote registered!',
+                    text: seats > 1 ? `Your votes for ${summaryNames} have been recorded successfully.` : `Your vote for ${summaryNames} has been recorded successfully.`,
+                    background: '#1e293b',
+                    color: '#fff',
+                    timer: 2500,
+                    showConfirmButton: false
+                });
+
+                renderPositions();
+            } catch (error) {
+                console.error('Voting error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Vote Failed',
+                    text: 'An error occurred while casting your vote. Please try again.',
+                    background: '#1e293b',
+                    color: '#fff'
+                });
+            }
+        }
+
+        updateCandidateSelectionUI();
+
+        function initialisePositionFeed() {
+            const positionsRef = ref(db, 'positions');
+
+            onValue(positionsRef, async (snapshot) => {
+                state.positions = snapshot.val() || {};
+                state.loadingPositions = false;
+
+                if (currentVoter) {
+                    await refreshVotingHistory();
+                } else {
+                    votedPositions = {};
+                }
+
+                renderPositions();
+            }, (error) => {
+                console.error('Failed to load positions:', error);
+                state.loadingPositions = false;
+                renderPositions();
+            });
+        }
+
+        async function refreshVotingHistory() {
+            if (!currentVoter) {
+                votedPositions = {};
+                return;
+            }
+
+            const positionKeys = Object.keys(state.positions);
+            if (positionKeys.length === 0) {
+                votedPositions = {};
+                return;
+            }
+
+            const results = await Promise.all(positionKeys.map(async (key) => {
+                try {
+                    const voteRef = ref(db, `votes/${key}/${currentVoter.roll}`);
+                    const snapshot = await get(voteRef);
+                    if (snapshot.exists()) {
+                        return [key, snapshot.val()];
+                    }
+                } catch (error) {
+                    console.error(`Failed to load vote history for ${key}:`, error);
+                }
+                return null;
+            }));
+
+            votedPositions = results.reduce((acc, entry) => {
+                if (entry) {
+                    acc[entry[0]] = entry[1];
+                }
+                return acc;
+            }, {});
+        }
+
+        async function checkRegistration() {
+            const storedVoter = localStorage.getItem('emasVoter');
+            if (!storedVoter) {
+                showRegistrationModal();
+                return;
+            }
+
+            try {
+                currentVoter = JSON.parse(storedVoter);
+            } catch (error) {
+                console.warn('Invalid voter data in storage, clearing session.', error);
+                localStorage.removeItem('emasVoter');
+                showRegistrationModal();
+                return;
+            }
+
+            displayVoterInfo();
+
+            if (!state.loadingPositions) {
+                await refreshVotingHistory();
+                renderPositions();
+            }
+        }
+
+        function showRegistrationModal() {
+            document.getElementById('registration-modal').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        document.getElementById('registration-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('voter-name').value.trim();
+            const roll = document.getElementById('voter-roll').value.trim().toUpperCase();
+
+            if (!name || !roll) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid Input',
+                    text: 'Please fill in all fields',
+                    background: '#1e293b',
+                    color: '#fff'
+                });
+                return;
+            }
+
+            try {
+                const voterRef = ref(db, `voters/${roll}`);
+                const snapshot = await get(voterRef);
+
+                if (snapshot.exists()) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Already Registered',
+                        text: 'This roll number has already been used to register.',
+                        background: '#1e293b',
+                        color: '#fff'
+                    });
+                    return;
+                }
+
+                const voterData = {
+                    name,
+                    roll,
+                    registeredAt: new Date().toISOString()
+                };
+
+                await set(voterRef, voterData);
+
+                localStorage.setItem('emasVoter', JSON.stringify(voterData));
+                currentVoter = voterData;
+
+                document.getElementById('registration-modal').classList.add('hidden');
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Registration Successful!',
+                    text: 'You can now cast your votes',
+                    background: '#1e293b',
+                    color: '#fff',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+
+                displayVoterInfo();
+
+                if (!state.loadingPositions) {
+                    await refreshVotingHistory();
+                    renderPositions();
+                } else {
+                    votedPositions = {};
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Registration Failed',
+                    text: 'An error occurred. Please try again.',
+                    background: '#1e293b',
+                    color: '#fff'
+                });
+            }
+        });
+
+        function displayVoterInfo() {
+            if (!currentVoter) return;
+
+            document.getElementById('voter-info').classList.remove('hidden');
+            document.getElementById('voter-name-display').textContent = currentVoter.name;
+            document.getElementById('voter-roll-display').textContent = `Roll No: ${currentVoter.roll}`;
+        }
+
+        function countVotesForRecord(record) {
+            if (!record || typeof record !== 'object') {
+                return 0;
+            }
+            if (Array.isArray(record)) {
+                return record.reduce((sum, entry) => sum + countVotesForRecord(entry), 0);
+            }
+            if (Object.prototype.hasOwnProperty.call(record, 'candidateId')) {
+                return 1;
+            }
+            return Object.values(record).reduce((sum, entry) => sum + countVotesForRecord(entry), 0);
+        }
+
+        function renderPositions() {
+            if (!positionsGrid) return;
+
+            positionsGrid.innerHTML = '';
+
+            if (state.loadingPositions) {
+                positionsGrid.innerHTML = `
+                    <div class="col-span-full text-center text-gray-400 py-10">
+                        Loading positions...
+                    </div>
+                `;
+                return;
+            }
+
+            const entries = Object.entries(state.positions);
+            if (entries.length === 0) {
+                positionsGrid.innerHTML = `
+                    <div class="col-span-full text-center text-gray-400 py-10">
+                        Positions will appear once the admin publishes them.
+                    </div>
+                `;
+                return;
+            }
+
+            entries.forEach(([key, position]) => {
+                const candidateList = Object.values(position.candidates || {});
+                const candidateCount = candidateList.length;
+                const seatCount = Number(position.availableSeats) || 1;
+                const voteRecord = votedPositions[key];
+                const votesCast = countVotesForRecord(voteRecord);
+                const hasVoted = votesCast > 0;
+                const canVote = !hasVoted && candidateCount > 0;
+                const seatInfoText = seatCount > 1 ? `${seatCount} seats available` : 'Single-seat position';
+                const voteBadge = hasVoted
+                    ? `<span class="voted-badge text-white text-xs font-semibold px-3 py-1 rounded-full">${seatCount > 1 ? `Voted (${Math.min(votesCast, seatCount)}/${seatCount})` : 'Voted ✅'}</span>`
+                    : '';
+
+                const card = document.createElement('div');
+                card.className = `position-card bg-slate-800 border border-slate-700 rounded-xl p-6 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900${hasVoted ? ' voted' : ''}`;
+                if (canVote) {
+                    card.setAttribute('role', 'button');
+                    card.setAttribute('tabindex', '0');
+                } else {
+                    card.setAttribute('aria-disabled', 'true');
+                }
+
+                card.innerHTML = `
+                    <div class="position-card__header">
+                        <div class="position-card__icon">
+                            <i data-lucide="${position.icon || 'shield'}" class="w-5 h-5 text-red-500"></i>
+                        </div>
+                        ${voteBadge || ''}
+                    </div>
+                    <div class="position-card__body">
+                        <h3 class="position-card__title">${position.title ?? key}</h3>
+                        ${position.description ? `<p class="text-gray-400 text-sm leading-relaxed">${position.description}</p>` : '<p class="text-gray-500 text-sm">Admin has not added a description yet.</p>'}
+                    </div>
+                    <div class="position-card__meta">
+                        <div class="position-card__meta-info">
+                            <span class="text-sm font-medium">${candidateCount === 0 ? 'No candidates yet' : `${candidateCount} Candidate${candidateCount === 1 ? '' : 's'}`}</span>
+                            <span class="text-xs text-gray-500">${seatInfoText}</span>
+                        </div>
+                        ${canVote ? '<span class="position-card__cta">Tap to vote <i data-lucide="chevron-right" class="w-4 h-4"></i></span>' : ''}
+                    </div>
+                `;
+
+                if (canVote) {
+                    card.addEventListener('click', () => openCandidatesModal(key));
+                    card.addEventListener('keydown', (event) => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                            event.preventDefault();
+                            openCandidatesModal(key);
+                        }
+                    });
+                }
+
+                positionsGrid.appendChild(card);
+            });
+
+            lucide.createIcons();
+        }
+
+        window.openCandidatesModal = function(positionKey) {
+            const position = state.positions[positionKey];
+            if (!position) return;
+
+            selectionState.positionKey = positionKey;
+            selectionState.seats = Math.max(1, Number(position.availableSeats) || 1);
+            selectionState.selected = new Set();
+            selectionState.candidates = {};
+            if (candidateSubmitButton) {
+                candidateSubmitButton.disabled = true;
+                candidateSubmitButton.classList.add('opacity-50', 'cursor-not-allowed', 'pointer-events-none');
+                candidateSubmitButton.setAttribute('aria-disabled', 'true');
+            }
+            if (candidateSelectionStatus) {
+                candidateSelectionStatus.classList.remove('hidden');
+            }
+
+            document.getElementById('modal-position-title').textContent = position.title ?? positionKey;
+
+            const candidatesList = document.getElementById('candidates-list');
+            candidatesList.innerHTML = '';
+
+            const candidates = Object.values(position.candidates || {});
+            if (candidates.length === 0) {
+                candidatesList.innerHTML = `
+                    <p class="text-sm text-gray-400">
+                        The admin has not added candidates for this position yet.
+                    </p>
+                `;
+                selectionState.selected = new Set();
+                selectionState.candidates = {};
+                if (candidateSelectionStatus) {
+                    candidateSelectionStatus.textContent = 'No candidates available yet for this position.';
+                    candidateSelectionStatus.classList.remove('hidden');
+                }
+                if (candidateSubmitButton) {
+                    candidateSubmitButton.disabled = true;
+                    candidateSubmitButton.classList.add('opacity-50', 'cursor-not-allowed', 'pointer-events-none');
+                    candidateSubmitButton.setAttribute('aria-disabled', 'true');
+                }
+                document.getElementById('candidates-modal').classList.remove('hidden');
+                lucide.createIcons();
+                return;
+            }
+
+            candidates.forEach((candidate) => {
+                const candidateId = candidate.id ?? candidate.name ?? `candidate-${positionKey}`;
+                selectionState.candidates[candidateId] = candidate;
+
+                const candidateCard = document.createElement('button');
+                candidateCard.type = 'button';
+                candidateCard.className = 'candidate-card w-full text-left bg-slate-900 border border-slate-700 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 transition-all hover:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500/60';
+                candidateCard.dataset.candidateId = candidateId;
+                candidateCard.setAttribute('aria-pressed', 'false');
+
+                const infoWrapper = document.createElement('div');
+                infoWrapper.className = 'flex items-start gap-3 sm:gap-4 w-full';
+
+                const avatar = document.createElement('img');
+                avatar.src = candidate.image || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(candidate.name ?? 'Candidate')}`;
+                avatar.alt = candidate.name ?? 'Candidate portrait';
+                avatar.className = 'w-16 h-16 rounded-full object-cover';
+
+                const textWrapper = document.createElement('div');
+
+                const nameEl = document.createElement('h4');
+                nameEl.className = 'text-white font-semibold text-lg';
+                nameEl.textContent = candidate.name ?? 'Unnamed candidate';
+                textWrapper.appendChild(nameEl);
+
+                if (candidate.manifesto) {
+                    const manifestoEl = document.createElement('p');
+                    manifestoEl.className = 'text-gray-400 text-sm mt-1';
+                    manifestoEl.textContent = candidate.manifesto;
+                    textWrapper.appendChild(manifestoEl);
+                }
+
+                const idEl = document.createElement('p');
+                idEl.className = 'text-gray-500 text-xs mt-2';
+                idEl.textContent = `ID: ${candidate.id ?? 'N/A'}`;
+                textWrapper.appendChild(idEl);
+
+                infoWrapper.appendChild(avatar);
+                infoWrapper.appendChild(textWrapper);
+
+                candidateCard.appendChild(infoWrapper);
+
+                const selectionIndicator = document.createElement('span');
+                selectionIndicator.className = 'text-sm font-semibold text-gray-400 sm:self-start';
+                selectionIndicator.dataset.role = 'selection-indicator';
+                selectionIndicator.textContent = selectionState.seats > 1
+                    ? `Tap to select (${selectionState.seats} left)`
+                    : 'Tap to select';
+                candidateCard.appendChild(selectionIndicator);
+
+                candidateCard.addEventListener('click', () => {
+                    toggleCandidateSelection(candidateId, candidateCard);
+                });
+
+                candidatesList.appendChild(candidateCard);
+            });
+
+            document.getElementById('candidates-modal').classList.remove('hidden');
+            updateCandidateSelectionUI();
+            lucide.createIcons();
+        };
+
+        window.closeCandidatesModal = function() {
+            document.getElementById('candidates-modal').classList.add('hidden');
+            resetCandidateSelection();
+        };
+        
+        renderPositions();
+        initialisePositionFeed();
+        checkRegistration();
+    </script>
+</body>
+</html>

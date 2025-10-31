@@ -1,0 +1,24 @@
+{
+  "name": "election-portal",
+  "version": "1.0.0",
+  "description": "Election Portal to conduct real time voting , which can be usefull for various places like college level election , and so on",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/theujwalthakare/Election-Portal.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/theujwalthakare/Election-Portal/issues"
+  },
+  "homepage": "https://github.com/theujwalthakare/Election-Portal#readme",
+  "dependencies": {
+    "firebase": "^12.5.0"
+  }
+}

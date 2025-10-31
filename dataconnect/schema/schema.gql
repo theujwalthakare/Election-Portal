@@ -1,0 +1,33 @@
+type User @table {
+  username: String!
+  passwordHash: String!
+  displayName: String!
+  createdAt: Timestamp!
+  email: String
+  isAdmin: Boolean
+}
+
+type Election @table {
+  name: String!
+  startDate: Timestamp!
+  endDate: Timestamp!
+  status: String!
+  createdAt: Timestamp!
+  description: String
+}
+
+type Candidate @table {
+  name: String!
+  election: Election!
+  createdAt: Timestamp!
+  bio: String
+  photoUrl: String
+  position: String
+}
+
+type Vote @table {
+  user: User!
+  election: Election!
+  candidate: Candidate!
+  createdAt: Timestamp!
+}
