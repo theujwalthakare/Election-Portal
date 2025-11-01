@@ -13,39 +13,112 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Project-wide stylesheet (global navbar + utilities) -->
     <link rel="stylesheet" href="style.css">
-    <!-- <style>
+    <style>
         body {
             font-family: 'Inter', sans-serif;
         }
         .gradient-text {
             background: linear-gradient(90deg, #ef4444, #b91c1c);
             -webkit-background-clip: text;
-            background-clip: text; /* standard property for compatibility */
+            background-clip: text;
             -webkit-text-fill-color: transparent;
-        }
-        .hero-bg {
-            background-color: #020617;
-            background-image: radial-gradient(at 27% 37%, hsla(0, 84%, 60%, 0.1) 0px, transparent 50%), radial-gradient(at 97% 21%, hsla(0, 78%, 72%, 0.1) 0px, transparent 50%), radial-gradient(at 52% 99%, hsla(0, 88%, 61%, 0.1) 0px, transparent 50%), radial-gradient(at 10% 29%, hsla(0, 86%, 61%, 0.1) 0px, transparent 50%), radial-gradient(at 97% 96%, hsla(0, 70%, 74%, 0.1) 0px, transparent 50%), radial-gradient(at 33% 50%, hsla(0, 77%, 73%, 0.1) 0px, transparent 50%), radial-gradient(at 79% 53%, hsla(0, 78%, 79%, 0.1) 0px, transparent 50%);
         }
         .blinking-cursor {
             font-weight: 500;
             animation: blink 1s step-end infinite;
         }
         @keyframes blink {
-            from, to { color: transparent }
+            from, to { color: transparent; }
             50% { color: #ef4444; }
         }
-       .logo-container .fa-canadian-maple-leaf, .logo-container .e-logo {
+        .logo-container .fa-canadian-maple-leaf,
+        .logo-container .e-logo {
             transition: transform 0.3s ease-in-out, filter 0.3s ease-in-out;
-       }
-       .logo-container:hover .fa-canadian-maple-leaf, .logo-container:hover .e-logo {
+        }
+        .logo-container:hover .fa-canadian-maple-leaf,
+        .logo-container:hover .e-logo {
             transform: scale(1.1);
             filter: drop-shadow(0 0 8px rgba(34, 197, 94, 0.6));
-       }
-       .logo-container:hover .e-logo {
-           filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.6));
-       }
-    </style> -->
+        }
+        .logo-container:hover .e-logo {
+            filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.6));
+        }
+        .hero-actions a {
+            min-height: 3.25rem;
+        }
+        .objective-card,
+        .legacy-card {
+            transition: transform 0.25s ease, border-color 0.25s ease;
+        }
+        .objective-card:hover,
+        .legacy-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(248, 113, 113, 0.45);
+        }
+        .events-placeholder {
+            transition: transform 0.25s ease;
+        }
+        .events-placeholder:hover {
+            transform: translateY(-4px);
+        }
+        @media (max-width: 640px) {
+            .landing-hero {
+                min-height: auto;
+                padding-top: 5rem;
+                padding-bottom: 4rem;
+            }
+            .landing-hero h1 {
+                font-size: 2.55rem;
+                line-height: 1.25;
+            }
+            .landing-hero p {
+                font-size: 1rem;
+            }
+            .hero-actions {
+                width: 100%;
+                gap: 0.75rem;
+            }
+            .hero-actions a {
+                width: 100%;
+                justify-content: center;
+            }
+            .objective-grid {
+                display: flex !important;
+                overflow-x: auto;
+                gap: 1rem;
+                padding: 0 1rem 1.4rem;
+                margin: 0 -1rem;
+                scroll-snap-type: x mandatory;
+            }
+            .objective-grid::-webkit-scrollbar {
+                display: none;
+            }
+            .objective-card {
+                flex: 0 0 78%;
+                min-width: 16rem;
+                scroll-snap-align: start;
+            }
+            .legacy-grid {
+                display: flex !important;
+                overflow-x: auto;
+                gap: 1rem;
+                padding: 0 1rem 1.4rem;
+                margin: 0 -1rem;
+                scroll-snap-type: x mandatory;
+            }
+            .legacy-grid::-webkit-scrollbar {
+                display: none;
+            }
+            .legacy-card {
+                flex: 0 0 80%;
+                min-width: 16rem;
+                scroll-snap-align: start;
+            }
+            .events-placeholder {
+                padding: 2.4rem 1.75rem;
+            }
+        }
+    </style>
 </head>
 <body class="bg-slate-900 text-gray-300">
 
@@ -68,7 +141,9 @@
                     <a href="#team" class="text-gray-300 hover:text-white transition-colors duration-200">The Team</a>
                     <a href="#legacy" class="text-gray-300 hover:text-white transition-colors duration-200">Our Legacy</a>
                     <a href="#events" class="text-gray-300 hover:text-white transition-colors duration-200">Events</a>
-                    <a href="election.html" class="text-white font-semibold bg-red-600 px-3 py-1.5 rounded-lg transition-all duration-200 hover:bg-red-700">Election 🗳️</a>
+                    <a href="admin.html" class="text-gray-300 hover:text-white transition-colors duration-200">Admin</a>
+                    <a href="election.html" data-election-link data-closed-label="Election Closed" class="text-white font-semibold bg-red-600 px-3 py-1.5 rounded-lg transition-all duration-200 hover:bg-red-700">Election 🗳️</a>
+                
                 </nav>
                 <div class="md:hidden">
                     <button id="mobile-menu-button" class="gp-navbar__toggle text-white p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
@@ -85,14 +160,15 @@
                 <a href="#team" class="text-gray-300 hover:bg-slate-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">The Team</a>
                 <a href="#legacy" class="text-gray-300 hover:bg-slate-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Our Legacy</a>
                 <a href="#events" class="text-gray-300 hover:bg-slate-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Events</a>
-                <a href="election.html" class="text-white bg-red-600 hover:bg-red-700 block px-3 py-2 rounded-md text-base font-medium">Election 🗳️</a>
+                <a href="admin.html" class="text-gray-300 hover:bg-slate-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Admin</a>
+                <a href="election.html" data-election-link data-closed-label="Election Closed" class="text-white bg-red-600 hover:bg-red-700 block px-3 py-2 rounded-md text-base font-medium">Election 🗳️</a>
             </nav>
         </div>
     </header>
     
     <main>
         <!-- Hero Section -->
-        <section class="min-h-screen flex items-center justify-center hero-bg pt-16">
+    <section class="min-h-screen flex items-center justify-center hero-bg pt-16 landing-hero">
             <div class="text-center max-w-4xl mx-auto px-4">
                 <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight mb-4">
                     Engineering the Future. <br class="sm:hidden">
@@ -101,11 +177,11 @@
                 <p class="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-8">
                     Welcome to the Elite Masters Association of Students (eMAS) 2025. We are the architects of tomorrow, fostering innovation, leadership, and a vibrant student community through technology exploration and quality education.
                 </p>
-                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <div class="flex flex-col sm:flex-row justify-center gap-4 hero-actions">
                     <a href="#events" class="bg-red-600 text-white font-semibold px-8 py-3 rounded-lg hover:bg-red-700 transition-all duration-300 shadow-lg shadow-red-600/40">
                         Explore Events
                     </a>
-                    <a href="election.html" class="bg-slate-700 text-white font-semibold px-8 py-3 rounded-lg hover:bg-slate-600 transition-all duration-300">
+                    <a href="election.html" data-election-link data-closed-label="Voting Closed" class="bg-slate-700 text-white font-semibold px-8 py-3 rounded-lg hover:bg-slate-600 transition-all duration-300">
                         Elections
                     </a>
                 </div>
@@ -119,27 +195,27 @@
                     <h2 class="text-3xl md:text-4xl font-bold text-white">Our Vision for 2025</h2>
                     <p class="mt-4 text-lg text-gray-400">We are dedicated to building a dynamic and supportive environment for every student.</p>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 objective-grid">
                     <!-- Objective Card 1 -->
-                    <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
+                    <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 objective-card">
                         <i data-lucide="lightbulb" class="w-10 h-10 mb-4 text-red-500"></i>
                         <h3 class="text-xl font-semibold text-white mb-2">Enrich Student Life</h3>
                         <p class="text-gray-400">To create and promote social, cultural, and educational programs that enrich the student experience.</p>
                     </div>
                     <!-- Objective Card 2 -->
-                    <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
+                    <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 objective-card">
                         <i data-lucide="users" class="w-10 h-10 mb-4 text-red-500"></i>
                         <h3 class="text-xl font-semibold text-white mb-2">Build Community</h3>
                         <p class="text-gray-400">Develop a strong sense of community among students, fostering collaboration and mutual respect.</p>
                     </div>
                     <!-- Objective Card 3 -->
-                    <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
+                    <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 objective-card">
                         <i data-lucide="shield-check" class="w-10 h-10 mb-4 text-red-500"></i>
                         <h3 class="text-xl font-semibold text-white mb-2">Promote Student Welfare</h3>
                         <p class="text-gray-400">Champion the general welfare of students and advocate for their interests within the college community.</p>
                     </div>
                     <!-- Objective Card 4 -->
-                    <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
+                    <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 objective-card">
                         <i data-lucide="megaphone" class="w-10 h-10 mb-4 text-red-500"></i>
                         <h3 class="text-xl font-semibold text-white mb-2">Represent Your Voice</h3>
                         <p class="text-gray-400">Act as the official student governance body, ensuring student issues and interests are represented effectively.</p>
@@ -199,21 +275,21 @@
                 <!-- Past Events Showcase -->
                 <div class="mb-16">
                     <h3 class="text-2xl font-bold text-white text-center mb-8">Milestones Through the Years</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 legacy-grid">
                         <!-- Legacy Event 1 -->
-                        <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
+                        <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 legacy-card">
                             <p class="text-sm text-red-500 font-semibold mb-2">2014-15</p>
                             <h4 class="text-lg font-semibold text-white mb-2">Mozilla Web Maker Workshop</h4>
                             <p class="text-gray-400 text-sm">Empowering students with web development skills through hands-on training with Mozilla's tools.</p>
                         </div>
                         <!-- Legacy Event 2 -->
-                        <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
+                        <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 legacy-card">
                             <p class="text-sm text-red-500 font-semibold mb-2">2015-16</p>
                             <h4 class="text-lg font-semibold text-white mb-2">RakshaBandhan for Kumbh-Mela Police</h4>
                             <p class="text-gray-400 text-sm">A heartfelt social initiative to honor and appreciate the police force on duty during the Kumbh Mela.</p>
                         </div>
                         <!-- Legacy Event 3 -->
-                        <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
+                        <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 legacy-card">
                             <p class="text-sm text-red-500 font-semibold mb-2">2016-17</p>
                             <h4 class="text-lg font-semibold text-white mb-2">Seminar on Cyber Security</h4>
                             <p class="text-gray-400 text-sm">Providing crucial insights into cybersecurity, its importance, and career opportunities with industry experts.</p>
@@ -254,7 +330,7 @@
     </div>
 
     <!-- Placeholder for no events -->
-    <div class="bg-slate-800/60 border border-slate-700 rounded-xl p-10 shadow-lg max-w-2xl mx-auto">
+    <div class="bg-slate-800/60 border border-slate-700 rounded-xl p-10 shadow-lg max-w-2xl mx-auto events-placeholder">
       <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto mb-4 text-gray-500" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
         <path d="M8 2v4"></path>
         <path d="M16 2v4"></path>
@@ -297,10 +373,10 @@
             <div class="flex flex-col md:flex-row items-center justify-between">
                 <div class="flex justify-center space-x-6 md:order-2">
                     <!-- Add social media links here -->
-                    <a href="#" class="text-gray-400 hover:text-white">
+                    <a href="https://www.linkedin.com/company/met-bhujbal-knowledge-city/" class="text-gray-400 hover:text-white">
                         <i data-lucide="linkedin"></i>
                     </a>
-                     <a href="#" class="text-gray-400 hover:text-white">
+                     <a href="https://www.instagram.com/metbkc_mca_engg/" class="text-gray-400 hover:text-white">
                         <i data-lucide="instagram"></i>
                     </a>
                      <a href="#" class="text-gray-400 hover:text-white">
@@ -391,6 +467,28 @@
                     menuCloseIcon.classList.add('hidden');
                 });
             });
+
+            try {
+                const storedCompletionRoll = localStorage.getItem('emasVoteComplete');
+                const voterDataRaw = localStorage.getItem('emasVoter');
+
+                if (storedCompletionRoll && voterDataRaw) {
+                    const voter = JSON.parse(voterDataRaw);
+                    if (voter?.roll && voter.roll === storedCompletionRoll) {
+                        document.querySelectorAll('[data-election-link]').forEach((link) => {
+                            const closedLabel = link.dataset.closedLabel || 'Election Closed';
+                            link.classList.add('pointer-events-none', 'cursor-not-allowed', 'opacity-60');
+                            link.setAttribute('aria-disabled', 'true');
+                            if (!link.dataset.originalLabel) {
+                                link.dataset.originalLabel = link.textContent.trim();
+                            }
+                            link.textContent = closedLabel;
+                        });
+                    }
+                }
+            } catch (error) {
+                console.warn('Election link lock failed', error);
+            }
         });
 
     </script>

@@ -25,23 +25,118 @@
             background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        .logo-container .fa-canadian-maple-leaf, .logo-container .e-logo {
+        .logo-container .fa-canadian-maple-leaf,
+        .logo-container .e-logo {
             transition: transform 0.3s ease-in-out, filter 0.3s ease-in-out;
         }
-        .logo-container:hover .fa-canadian-maple-leaf, .logo-container:hover .e-logo {
+        .logo-container:hover .fa-canadian-maple-leaf,
+        .logo-container:hover .e-logo {
             transform: scale(1.1);
             filter: drop-shadow(0 0 8px rgba(34, 197, 94, 0.6));
         }
         .logo-container:hover .e-logo {
             filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.6));
         }
+
+        .mobile-nav-panel {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            pointer-events: none;
+            transition: max-height 0.28s ease, opacity 0.28s ease;
+        }
+        .mobile-nav-panel.open {
+            max-height: 420px;
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .mobile-nav-panel nav a {
+            transition: transform 0.2s ease;
+        }
+        .mobile-nav-panel nav a:active {
+            transform: translateY(-2px);
+        }
         
-        /* Modal Animations */
+        /* Modal Layout Improvements */
         .modal-backdrop {
             animation: fadeIn 0.3s ease-out;
         }
         .modal-content {
             animation: slideIn 0.3s ease-out;
+        }
+        .candidate-modal-content {
+            width: min(100%, 760px);
+            height: min(88vh, 680px);
+            display: flex;
+            flex-direction: column;
+            padding: 2rem;
+            gap: 1.5rem;
+        }
+        .candidate-modal-content header,
+        .candidate-modal-content .candidate-scroll-area,
+        .candidate-modal-content footer {
+            width: 100%;
+        }
+        .candidate-scroll-area {
+            flex: 1 1 auto;
+            overflow-y: auto;
+            padding-right: 0.25rem;
+            margin-right: -0.25rem;
+            scroll-behavior: smooth;
+        }
+        .candidate-selection-footer {
+            flex-shrink: 0;
+            padding: 1rem 1.25rem 0;
+            border-top: 1px solid rgba(148, 163, 184, 0.16);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .candidate-footer-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .candidate-selection-footer button {
+            width: 100%;
+        }
+        .candidate-close-button {
+            background: rgba(51, 65, 85, 0.85);
+        }
+        .candidate-close-button:hover {
+            background: rgba(71, 85, 105, 0.95);
+        }
+        .candidate-submit-button[disabled] {
+            opacity: 0.7;
+        }
+        .candidate-card {
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.8));
+        }
+        .candidate-card:hover {
+            border-color: rgba(248, 113, 113, 0.75);
+            transform: translateY(-2px);
+        }
+
+        @media (min-width: 640px) {
+            .candidate-modal-content {
+                height: min(88vh, 640px);
+                padding: 2rem 2.25rem;
+            }
+            .candidate-selection-footer {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                padding: 1rem 1.25rem 0;
+            }
+            .candidate-footer-actions {
+                flex-direction: row;
+                justify-content: flex-end;
+                gap: 0.75rem;
+            }
+            .candidate-selection-footer button {
+                width: auto;
+                min-width: 10rem;
+            }
         }
         @keyframes fadeIn {
             from { opacity: 0; }
@@ -163,33 +258,35 @@
         }
 
         @media (max-width: 640px) {
-            .candidate-modal-content {
-                padding: 1.75rem;
+            .mobile-modal-shell {
+                background: rgba(15, 23, 42, 0.9);
+                backdrop-filter: blur(6px);
+            }
+
+            .mobile-modal-panel {
+                padding: 1rem;
+            }
+
+            .modal-content {
                 border-radius: 1.25rem;
-                max-height: calc(100vh - 2rem);
-                display: flex;
-                flex-direction: column;
+            }
+
+            .candidate-modal-content {
+                height: calc(100vh - 3rem);
+                padding: 1.5rem;
             }
 
             .candidate-scroll-area {
                 flex: 1 1 auto;
-                overflow-y: auto;
-                margin: 0 -0.25rem;
-                padding: 0 0.25rem;
-                scroll-padding-bottom: 4.5rem;
-                max-height: calc(100vh - 12.5rem);
-            }
-
-            .registration-modal-content {
-                padding: 1.5rem;
-                border-radius: 1.25rem;
+                margin: 0 -0.5rem;
+                padding: 0 0.5rem;
             }
 
             .candidate-selection-footer {
                 position: sticky;
                 bottom: 0;
-                margin: 1.5rem -1.75rem -1.75rem;
-                padding: 1rem 1.75rem 1.5rem;
+                margin: 0 -1.5rem -1.5rem;
+                padding: 1rem 1.5rem 1.5rem;
                 background: linear-gradient(180deg, rgba(15,23,42,0.98), rgba(15,23,42,0.92));
                 border-top: 1px solid rgba(148,163,184,0.12);
                 backdrop-filter: blur(6px);
@@ -201,6 +298,12 @@
             .candidate-selection-footer button {
                 height: 3.25rem;
                 font-size: 0.95rem;
+            }
+
+            .candidate-card {
+                padding: 1rem;
+                border-radius: 1rem;
+                gap: 1rem;
             }
 
             .position-card {
@@ -231,11 +334,6 @@
                 border-top: 1px dashed rgba(239, 68, 68, 0.25);
                 padding-top: 0.65rem;
                 margin-top: 0.35rem;
-            }
-
-            .candidate-card {
-                padding: 1rem;
-                border-radius: 1rem;
             }
 
             .candidate-card img {
@@ -269,7 +367,7 @@
                     <a href="election.html" class="text-white font-semibold bg-red-600/20 px-3 py-1.5 rounded-lg transition-colors duration-200 active">Election</a>
                 </nav>
                 <div class="md:hidden">
-                    <button id="mobile-menu-button" class="gp-navbar__toggle text-white p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+                    <button id="mobile-menu-button" aria-label="Toggle navigation" aria-expanded="false" class="sm:hidden inline-flex items-center justify-center w-12 h-12 text-white rounded-xl border border-white/10 bg-white/5 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-red-500 transition">
                         <i data-lucide="menu" id="menu-open-icon"></i>
                         <i data-lucide="x" id="menu-close-icon" class="hidden"></i>
                     </button>
@@ -277,7 +375,7 @@
             </div>
         </div>
         <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden gp-mobile-menu">
+        <div id="mobile-menu" class="mobile-nav-panel hidden sm:hidden md:hidden gp-mobile-menu">
             <nav class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                 <a href="index.html#about" class="text-gray-300 hover:bg-slate-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">About</a>
                 <a href="index.html#team" class="text-gray-300 hover:bg-slate-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">The Team</a>
@@ -320,8 +418,15 @@
                     <p class="text-gray-400">Click on any position to view candidates and cast your vote</p>
                 </div>
 
+                <div id="election-status-callout" class="mb-6 hidden">
+                    <div class="flex items-start gap-3 bg-amber-500/10 border border-amber-500/30 text-amber-200 rounded-xl px-4 py-3 text-sm">
+                        <i data-lucide="info" class="w-4 h-4 mt-1"></i>
+                        <span>Voting is currently closed. Feel free to explore the positions and candidates—ballots will open once the admin starts the election.</span>
+                    </div>
+                </div>
+
                 <!-- Positions Grid -->
-                <div id="positions-grid" class="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
+                <div id="positions-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     <!-- Positions will be dynamically loaded here -->
                 </div>
             </div>
@@ -354,9 +459,9 @@
 
     <!-- Registration Modal -->
     <div id="registration-modal" class="fixed inset-0 z-[100] hidden">
-        <div class="modal-backdrop fixed inset-0 bg-black/70 backdrop-blur-sm"></div>
-        <div class="fixed inset-0 flex items-center justify-center p-4">
-            <div class="modal-content registration-modal-content bg-slate-800 border border-slate-700 rounded-xl shadow-2xl max-w-md w-full p-8 relative">
+        <div class="mobile-modal-shell fixed inset-0 bg-slate-900/90"></div>
+        <div class="fixed inset-0 mobile-modal-panel flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+            <div class="modal-content registration-modal-content bg-slate-800 border border-slate-700 rounded-xl shadow-2xl max-w-md w-full p-8 relative transition-all duration-300 ease-in-out scale-95 sm:scale-100">
                 <div class="text-center mb-6">
                     <div class="w-16 h-16 bg-red-600/20 rounded-full flex items-center justify-center mx-auto mb-4">
                         <i data-lucide="user-check" class="w-8 h-8 text-red-500"></i>
@@ -390,7 +495,7 @@
                     
                     <button 
                         type="submit" 
-                        class="w-full bg-red-600 text-white font-semibold px-6 py-3 rounded-lg hover:bg-red-700 transition-all duration-300 shadow-lg shadow-red-600/40"
+                        class="w-full bg-red-600 text-white font-semibold h-12 px-4 py-2 text-base rounded-xl hover:bg-red-700 transition-all duration-300 shadow-lg shadow-red-600/40 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-red-400"
                     >
                         Register & Continue
                     </button>
@@ -400,32 +505,39 @@
     </div>
 
     <!-- Candidates Modal -->
-    <div id="candidates-modal" class="fixed inset-0 z-[100] hidden">
-        <div class="modal-backdrop fixed inset-0 bg-black/70 backdrop-blur-sm" onclick="closeCandidatesModal()"></div>
-        <div class="fixed inset-0 flex items-center justify-center p-4 overflow-y-auto">
-            <div class="modal-content candidate-modal-content bg-slate-800 border border-slate-700 rounded-xl shadow-2xl max-w-2xl w-full p-6 sm:p-8 my-8 relative">
+    <div id="candidates-modal" class="fixed inset-0 z-[100] hidden" role="dialog" aria-modal="true" aria-labelledby="modal-position-title">
+        <div class="mobile-modal-shell fixed inset-0 bg-slate-900/90" onclick="closeCandidatesModal()"></div>
+        <div class="fixed inset-0 mobile-modal-panel flex items-center justify-center p-4 sm:p-6">
+            <div class="modal-content candidate-modal-content bg-slate-800 border border-slate-700 rounded-xl shadow-2xl max-w-3xl w-full my-6 relative transition-all duration-300 ease-in-out scale-95 sm:scale-100">
                 <button 
                     onclick="closeCandidatesModal()" 
-                    class="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
+                    class="absolute top-3 right-3 w-11 h-11 flex items-center justify-center rounded-full bg-slate-700/60 text-gray-200 hover:text-white hover:bg-slate-600 transition"
+                    aria-label="Close"
                 >
                     <i data-lucide="x" class="w-6 h-6"></i>
                 </button>
                 
-                <div class="mb-6">
-                    <h2 class="text-2xl sm:text-3xl font-bold text-white mb-2" id="modal-position-title"></h2>
-                    <p class="text-gray-400">Select your preferred candidate</p>
-                </div>
+                <header class="mb-4 sm:mb-6 text-center sm:text-left">
+                    <h2 class="text-2xl sm:text-3xl font-bold text-white mb-2 leading-tight" id="modal-position-title"></h2>
+                    <p class="text-base text-gray-400 leading-relaxed">Pick the candidates you want to support.</p>
+                </header>
                 
-                <div id="candidates-list" class="space-y-4 candidate-scroll-area">
+                <div id="candidates-list" class="space-y-4 candidate-scroll-area" role="list">
                     <!-- Candidates will be dynamically loaded here -->
                 </div>
-                <div id="candidate-selection-footer" class="candidate-selection-footer mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                    <p id="candidate-selection-status" class="text-sm text-gray-400 hidden" aria-live="polite"></p>
-                    <button id="candidate-submit-button" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-semibold px-6 py-2.5 rounded-lg transition" disabled>
-                        <i data-lucide="check" class="w-4 h-4"></i>
+                <footer id="candidate-selection-footer" class="candidate-selection-footer mt-6">
+                    <p id="candidate-selection-status" class="text-base text-gray-300 hidden" aria-live="polite"></p>
+                    <div class="candidate-footer-actions">
+                        <button type="button" onclick="closeCandidatesModal()" class="candidate-close-button inline-flex items-center justify-center gap-2 bg-slate-700 hover:bg-slate-600 text-gray-100 font-semibold h-12 px-4 py-2 text-base rounded-xl transition">
+                            <i data-lucide="x" class="w-5 h-5"></i>
+                            Close
+                        </button>
+                        <button type="button" id="candidate-submit-button" class="candidate-submit-button inline-flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-semibold h-12 px-4 py-2 text-base rounded-xl transition" disabled>
+                        <i data-lucide="check" class="w-5 h-5"></i>
                         Submit selection
-                    </button>
-                </div>
+                        </button>
+                    </div>
+                </footer>
             </div>
         </div>
     </div>
@@ -434,31 +546,50 @@
     <script type="module">
         import { db, ref, set, get, onValue } from './firebase.js';
 
-        // Initialize Lucide Icons
-        lucide.createIcons();
+    // Initialize Lucide Icons
+    lucide.createIcons();
 
-        // Mobile menu toggle
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
-        const menuOpenIcon = document.getElementById('menu-open-icon');
-        const menuCloseIcon = document.getElementById('menu-close-icon');
-        const positionsGrid = document.getElementById('positions-grid');
-        const candidateSelectionStatus = document.getElementById('candidate-selection-status');
-        const candidateSubmitButton = document.getElementById('candidate-submit-button');
+    const VOTE_COMPLETION_KEY = 'emasVoteComplete';
+    let completionHandled = false;
+
+    // Mobile menu toggle
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuOpenIcon = document.getElementById('menu-open-icon');
+    const menuCloseIcon = document.getElementById('menu-close-icon');
+    const positionsGrid = document.getElementById('positions-grid');
+    const candidateSelectionStatus = document.getElementById('candidate-selection-status');
+    const candidateSubmitButton = document.getElementById('candidate-submit-button');
+    const electionStatusCallout = document.getElementById('election-status-callout');
+
+        function setMobileMenuState(open) {
+            if (!mobileMenu || !mobileMenuButton) return;
+
+            if (open) {
+                mobileMenu.classList.add('open');
+                mobileMenu.classList.remove('hidden');
+                mobileMenuButton.setAttribute('aria-expanded', 'true');
+                menuOpenIcon.classList.add('hidden');
+                menuCloseIcon.classList.remove('hidden');
+            } else {
+                mobileMenu.classList.remove('open');
+                mobileMenu.classList.add('hidden');
+                mobileMenuButton.setAttribute('aria-expanded', 'false');
+                menuOpenIcon.classList.remove('hidden');
+                menuCloseIcon.classList.add('hidden');
+            }
+        }
 
         mobileMenuButton.addEventListener('click', () => {
-            const isMenuOpen = !mobileMenu.classList.contains('hidden');
-            mobileMenu.classList.toggle('hidden');
-            menuOpenIcon.classList.toggle('hidden', !isMenuOpen);
-            menuCloseIcon.classList.toggle('hidden', isMenuOpen);
+            if (!mobileMenu) return;
+            const isOpen = mobileMenu.classList.contains('open');
+            setMobileMenuState(!isOpen);
         });
 
         // Close mobile menu when a link is clicked
         document.querySelectorAll('#mobile-menu a').forEach(link => {
             link.addEventListener('click', () => {
-                mobileMenu.classList.add('hidden');
-                menuOpenIcon.classList.remove('hidden');
-                menuCloseIcon.classList.add('hidden');
+                setMobileMenuState(false);
             });
         });
 
@@ -471,7 +602,8 @@
 
         const state = {
             positions: {},
-            loadingPositions: true
+            loadingPositions: true,
+            electionLive: false
         };
 
         let currentVoter = null;
@@ -481,7 +613,8 @@
             positionKey: null,
             seats: 1,
             selected: new Set(),
-            candidates: {}
+            candidates: {},
+            votingEnabled: false
         };
 
         function resetCandidateSelection() {
@@ -489,6 +622,7 @@
             selectionState.seats = 1;
             selectionState.selected = new Set();
             selectionState.candidates = {};
+            selectionState.votingEnabled = false;
             if (candidateSelectionStatus) {
                 candidateSelectionStatus.textContent = '';
                 candidateSelectionStatus.classList.add('hidden');
@@ -502,6 +636,17 @@
 
         function updateCandidateSelectionUI() {
             if (!candidateSelectionStatus) {
+                return;
+            }
+
+            if (!state.electionLive) {
+                candidateSelectionStatus.textContent = 'Voting has not started yet. Candidate details are available for preview only.';
+                candidateSelectionStatus.classList.remove('hidden');
+                if (candidateSubmitButton) {
+                    candidateSubmitButton.disabled = true;
+                    candidateSubmitButton.classList.add('opacity-50', 'cursor-not-allowed', 'pointer-events-none');
+                    candidateSubmitButton.setAttribute('aria-disabled', 'true');
+                }
                 return;
             }
 
@@ -556,6 +701,10 @@
         }
 
         function toggleCandidateSelection(candidateId, cardElement) {
+            if (!state.electionLive) {
+                return;
+            }
+
             const seats = selectionState.seats;
 
             const currentlySelected = selectionState.selected.has(candidateId);
@@ -693,7 +842,7 @@
                 document.getElementById('candidates-modal').classList.add('hidden');
                 resetCandidateSelection();
 
-                Swal.fire({
+                await Swal.fire({
                     icon: 'success',
                     title: seats > 1 ? 'Votes registered!' : 'Vote registered!',
                     text: seats > 1 ? `Your votes for ${summaryNames} have been recorded successfully.` : `Your vote for ${summaryNames} has been recorded successfully.`,
@@ -704,6 +853,7 @@
                 });
 
                 renderPositions();
+                maybeHandleVotingCompletion();
             } catch (error) {
                 console.error('Voting error:', error);
                 Swal.fire({
@@ -732,10 +882,56 @@
                 }
 
                 renderPositions();
+                maybeHandleVotingCompletion();
             }, (error) => {
                 console.error('Failed to load positions:', error);
                 state.loadingPositions = false;
                 renderPositions();
+            });
+        }
+
+        function initialiseElectionStatusFeed() {
+            const electionLiveRef = ref(db, 'settings/electionLive');
+            let lastKnownStatus = state.electionLive;
+            let initialised = false;
+
+            onValue(electionLiveRef, (snapshot) => {
+                const nextStatus = Boolean(snapshot.val());
+                const statusChanged = initialised ? nextStatus !== lastKnownStatus : false;
+                lastKnownStatus = nextStatus;
+                initialised = true;
+                state.electionLive = nextStatus;
+
+                updateElectionLiveUI();
+
+                if (!state.loadingPositions) {
+                    renderPositions();
+                }
+
+                const candidatesModalEl = document.getElementById('candidates-modal');
+                const modalOpen = candidatesModalEl && !candidatesModalEl.classList.contains('hidden');
+
+                if (statusChanged && modalOpen) {
+                    candidatesModalEl.classList.add('hidden');
+                    resetCandidateSelection();
+                    Swal.fire({
+                        icon: state.electionLive ? 'success' : 'info',
+                        title: state.electionLive ? 'Voting resumed' : 'Voting paused',
+                        text: state.electionLive
+                            ? 'Voting is now open. Re-open a position to cast your vote.'
+                            : 'The election has been paused by the admin. Voting is temporarily unavailable.',
+                        background: '#1e293b',
+                        color: '#fff'
+                    });
+                } else if (modalOpen && state.electionLive) {
+                    updateCandidateSelectionUI();
+                }
+
+                if (state.electionLive) {
+                    maybeHandleVotingCompletion();
+                }
+            }, (error) => {
+                console.error('Failed to load election status:', error);
             });
         }
 
@@ -770,6 +966,8 @@
                 }
                 return acc;
             }, {});
+
+            maybeHandleVotingCompletion();
         }
 
         async function checkRegistration() {
@@ -789,6 +987,11 @@
             }
 
             displayVoterInfo();
+
+            enforceCompletionGateIfNeeded();
+            if (completionHandled) {
+                return;
+            }
 
             if (!state.loadingPositions) {
                 await refreshVotingHistory();
@@ -897,6 +1100,68 @@
             return Object.values(record).reduce((sum, entry) => sum + countVotesForRecord(entry), 0);
         }
 
+        function getEligiblePositionKeys() {
+            return Object.entries(state.positions || {})
+                .filter(([, position]) => Object.values(position.candidates || {}).length > 0)
+                .map(([key]) => key);
+        }
+
+        function isVotingCompleteForCurrentVoter() {
+            if (!currentVoter) return false;
+            const eligibleKeys = getEligiblePositionKeys();
+            if (eligibleKeys.length === 0) return false;
+            return eligibleKeys.every((key) => countVotesForRecord(votedPositions[key]) > 0);
+        }
+
+        function handleVotingCompletion() {
+            if (!currentVoter) return;
+            completionHandled = true;
+            localStorage.setItem(VOTE_COMPLETION_KEY, currentVoter.roll);
+            Swal.fire({
+                icon: 'success',
+                title: 'Thank you for voting!',
+                text: 'Your votes have been recorded. Redirecting you to the home page.',
+                background: '#1e293b',
+                color: '#fff',
+                timer: 2200,
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                willClose: () => {
+                    window.location.href = 'index.html';
+                }
+            });
+        }
+
+        function maybeHandleVotingCompletion() {
+            if (completionHandled) return;
+            if (!currentVoter) return;
+            if (!isVotingCompleteForCurrentVoter()) return;
+            handleVotingCompletion();
+        }
+
+        function enforceCompletionGateIfNeeded() {
+            if (!currentVoter || completionHandled) return;
+            const storedRoll = localStorage.getItem(VOTE_COMPLETION_KEY);
+            if (storedRoll && storedRoll === currentVoter.roll) {
+                completionHandled = true;
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Voting complete',
+                    text: 'Thanks for participating! Redirecting you to the home page.',
+                    background: '#1e293b',
+                    color: '#fff',
+                    timer: 2200,
+                    showConfirmButton: false,
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    willClose: () => {
+                        window.location.href = 'index.html';
+                    }
+                });
+            }
+        }
+
         function renderPositions() {
             if (!positionsGrid) return;
 
@@ -928,20 +1193,22 @@
                 const voteRecord = votedPositions[key];
                 const votesCast = countVotesForRecord(voteRecord);
                 const hasVoted = votesCast > 0;
-                const canVote = !hasVoted && candidateCount > 0;
+                const votingEnabled = state.electionLive;
+                const canVote = votingEnabled && !hasVoted && candidateCount > 0;
+                const canPreview = !votingEnabled && candidateCount > 0;
+                const allowModal = canVote || canPreview;
                 const seatInfoText = seatCount > 1 ? `${seatCount} seats available` : 'Single-seat position';
                 const voteBadge = hasVoted
                     ? `<span class="voted-badge text-white text-xs font-semibold px-3 py-1 rounded-full">${seatCount > 1 ? `Voted (${Math.min(votesCast, seatCount)}/${seatCount})` : 'Voted ✅'}</span>`
                     : '';
+                const metaStatus = votingEnabled
+                    ? canVote
+                        ? '<span class="position-card__cta">Tap to vote <i data-lucide="chevron-right" class="w-4 h-4"></i></span>'
+                        : ''
+                    : '<span class="inline-flex items-center gap-2 text-xs font-semibold text-amber-200 bg-amber-500/10 px-2.5 py-1 rounded-full">Voting not started</span>';
 
                 const card = document.createElement('div');
-                card.className = `position-card bg-slate-800 border border-slate-700 rounded-xl p-6 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900${hasVoted ? ' voted' : ''}`;
-                if (canVote) {
-                    card.setAttribute('role', 'button');
-                    card.setAttribute('tabindex', '0');
-                } else {
-                    card.setAttribute('aria-disabled', 'true');
-                }
+                card.className = `position-card w-full max-w-sm mx-auto bg-slate-800 border border-slate-700 rounded-2xl p-6 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900${hasVoted ? ' voted' : ''}`;
 
                 card.innerHTML = `
                     <div class="position-card__header">
@@ -950,20 +1217,30 @@
                         </div>
                         ${voteBadge || ''}
                     </div>
-                    <div class="position-card__body">
-                        <h3 class="position-card__title">${position.title ?? key}</h3>
-                        ${position.description ? `<p class="text-gray-400 text-sm leading-relaxed">${position.description}</p>` : '<p class="text-gray-500 text-sm">Admin has not added a description yet.</p>'}
+                    <div class="position-card__body space-y-2">
+                        <h3 class="position-card__title text-lg font-semibold">${position.title ?? key}</h3>
+                        ${position.description ? `<p class="text-base leading-relaxed text-gray-300">${position.description}</p>` : '<p class="text-base leading-relaxed text-gray-500">Admin has not added a description yet.</p>'}
                     </div>
                     <div class="position-card__meta">
                         <div class="position-card__meta-info">
-                            <span class="text-sm font-medium">${candidateCount === 0 ? 'No candidates yet' : `${candidateCount} Candidate${candidateCount === 1 ? '' : 's'}`}</span>
-                            <span class="text-xs text-gray-500">${seatInfoText}</span>
+                            <span class="text-base font-semibold text-gray-200">${candidateCount === 0 ? 'No candidates yet' : `${candidateCount} Candidate${candidateCount === 1 ? '' : 's'}`}</span>
+                            <span class="text-sm text-gray-500">${seatInfoText}</span>
                         </div>
-                        ${canVote ? '<span class="position-card__cta">Tap to vote <i data-lucide="chevron-right" class="w-4 h-4"></i></span>' : ''}
+                        ${metaStatus}
                     </div>
                 `;
 
-                if (canVote) {
+                card.style.cursor = allowModal ? 'pointer' : 'default';
+
+                if (allowModal) {
+                    card.setAttribute('role', 'button');
+                    card.setAttribute('tabindex', '0');
+                    card.removeAttribute('aria-disabled');
+                    if (!canVote) {
+                        card.setAttribute('aria-label', `${position.title ?? key} candidates preview (voting not started)`);
+                    } else {
+                        card.removeAttribute('aria-label');
+                    }
                     card.addEventListener('click', () => openCandidatesModal(key));
                     card.addEventListener('keydown', (event) => {
                         if (event.key === 'Enter' || event.key === ' ') {
@@ -971,12 +1248,27 @@
                             openCandidatesModal(key);
                         }
                     });
+                } else {
+                    card.setAttribute('aria-disabled', 'true');
                 }
 
                 positionsGrid.appendChild(card);
             });
 
             lucide.createIcons();
+            maybeHandleVotingCompletion();
+        }
+
+        function updateElectionLiveUI() {
+            if (!electionStatusCallout) {
+                return;
+            }
+
+            if (state.electionLive) {
+                electionStatusCallout.classList.add('hidden');
+            } else {
+                electionStatusCallout.classList.remove('hidden');
+            }
         }
 
         window.openCandidatesModal = function(positionKey) {
@@ -987,6 +1279,10 @@
             selectionState.seats = Math.max(1, Number(position.availableSeats) || 1);
             selectionState.selected = new Set();
             selectionState.candidates = {};
+            const voteRecord = votedPositions[positionKey];
+            const votesCast = countVotesForRecord(voteRecord);
+            const votingEnabled = state.electionLive && votesCast === 0;
+            selectionState.votingEnabled = votingEnabled;
             if (candidateSubmitButton) {
                 candidateSubmitButton.disabled = true;
                 candidateSubmitButton.classList.add('opacity-50', 'cursor-not-allowed', 'pointer-events-none');
@@ -994,6 +1290,14 @@
             }
             if (candidateSelectionStatus) {
                 candidateSelectionStatus.classList.remove('hidden');
+                if (!state.electionLive) {
+                    candidateSelectionStatus.textContent = 'Voting has not started yet. Candidate details are available for preview only.';
+                } else if (!votingEnabled) {
+                    candidateSelectionStatus.textContent = 'You have already submitted your vote for this position.';
+                } else {
+                    candidateSelectionStatus.textContent = '';
+                    candidateSelectionStatus.classList.add('hidden');
+                }
             }
 
             document.getElementById('modal-position-title').textContent = position.title ?? positionKey;
@@ -1004,7 +1308,7 @@
             const candidates = Object.values(position.candidates || {});
             if (candidates.length === 0) {
                 candidatesList.innerHTML = `
-                    <p class="text-sm text-gray-400">
+                    <p class="text-base text-gray-400 leading-relaxed">
                         The admin has not added candidates for this position yet.
                     </p>
                 `;
@@ -1030,34 +1334,36 @@
 
                 const candidateCard = document.createElement('button');
                 candidateCard.type = 'button';
-                candidateCard.className = 'candidate-card w-full text-left bg-slate-900 border border-slate-700 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 transition-all hover:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500/60';
+                candidateCard.className = 'candidate-card w-full bg-slate-900 border border-slate-700 rounded-xl p-4 flex flex-col items-center text-center space-y-3 shadow-md sm:flex-row sm:items-center sm:justify-between sm:space-y-0 sm:gap-6 transition-all hover:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500/60';
                 candidateCard.dataset.candidateId = candidateId;
                 candidateCard.setAttribute('aria-pressed', 'false');
 
                 const infoWrapper = document.createElement('div');
-                infoWrapper.className = 'flex items-start gap-3 sm:gap-4 w-full';
+                infoWrapper.className = 'flex flex-col items-center gap-3 sm:flex-row sm:items-center sm:gap-4 w-full';
 
                 const avatar = document.createElement('img');
                 avatar.src = candidate.image || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(candidate.name ?? 'Candidate')}`;
                 avatar.alt = candidate.name ?? 'Candidate portrait';
-                avatar.className = 'w-16 h-16 rounded-full object-cover';
+                avatar.className = 'w-24 h-24 rounded-full object-cover shadow-lg';
+                avatar.loading = 'lazy';
 
                 const textWrapper = document.createElement('div');
+                textWrapper.className = 'flex-1 space-y-2 text-center sm:text-left';
 
                 const nameEl = document.createElement('h4');
-                nameEl.className = 'text-white font-semibold text-lg';
+                nameEl.className = 'text-white text-lg font-semibold';
                 nameEl.textContent = candidate.name ?? 'Unnamed candidate';
                 textWrapper.appendChild(nameEl);
 
                 if (candidate.manifesto) {
                     const manifestoEl = document.createElement('p');
-                    manifestoEl.className = 'text-gray-400 text-sm mt-1';
+                    manifestoEl.className = 'text-gray-300 text-base leading-relaxed';
                     manifestoEl.textContent = candidate.manifesto;
                     textWrapper.appendChild(manifestoEl);
                 }
 
                 const idEl = document.createElement('p');
-                idEl.className = 'text-gray-500 text-xs mt-2';
+                idEl.className = 'text-gray-500 text-sm';
                 idEl.textContent = `ID: ${candidate.id ?? 'N/A'}`;
                 textWrapper.appendChild(idEl);
 
@@ -1067,16 +1373,30 @@
                 candidateCard.appendChild(infoWrapper);
 
                 const selectionIndicator = document.createElement('span');
-                selectionIndicator.className = 'text-sm font-semibold text-gray-400 sm:self-start';
+                selectionIndicator.className = 'text-base font-semibold text-gray-400 sm:self-start';
                 selectionIndicator.dataset.role = 'selection-indicator';
-                selectionIndicator.textContent = selectionState.seats > 1
-                    ? `Tap to select (${selectionState.seats} left)`
-                    : 'Tap to select';
+                if (votingEnabled) {
+                    selectionIndicator.textContent = selectionState.seats > 1
+                        ? `Tap to select (${selectionState.seats} left)`
+                        : 'Tap to select';
+                } else if (!state.electionLive) {
+                    selectionIndicator.textContent = 'Voting not started';
+                    selectionIndicator.classList.remove('text-gray-400');
+                    selectionIndicator.classList.add('text-amber-300');
+                } else {
+                    selectionIndicator.textContent = 'Vote already submitted';
+                    selectionIndicator.classList.add('text-emerald-300');
+                }
                 candidateCard.appendChild(selectionIndicator);
 
-                candidateCard.addEventListener('click', () => {
-                    toggleCandidateSelection(candidateId, candidateCard);
-                });
+                if (votingEnabled) {
+                    candidateCard.addEventListener('click', () => {
+                        toggleCandidateSelection(candidateId, candidateCard);
+                    });
+                } else {
+                    candidateCard.setAttribute('aria-disabled', 'true');
+                    candidateCard.classList.add('cursor-default', 'opacity-95');
+                }
 
                 candidatesList.appendChild(candidateCard);
             });
@@ -1090,10 +1410,23 @@
             document.getElementById('candidates-modal').classList.add('hidden');
             resetCandidateSelection();
         };
-        
-        renderPositions();
-        initialisePositionFeed();
-        checkRegistration();
+
+        async function bootstrapElectionPage() {
+            try {
+                const statusSnapshot = await get(ref(db, 'settings/electionLive'));
+                state.electionLive = Boolean(statusSnapshot.val());
+            } catch (error) {
+                console.warn('Failed to fetch election status:', error);
+            }
+
+            updateElectionLiveUI();
+            renderPositions();
+            initialiseElectionStatusFeed();
+            initialisePositionFeed();
+            checkRegistration();
+        }
+
+        bootstrapElectionPage();
     </script>
 </body>
 </html>

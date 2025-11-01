@@ -25,8 +25,9 @@
     .admin-grid {
       display: grid;
       gap: 1.5rem;
+      grid-template-columns: minmax(0, 1fr);
     }
-    @media (min-width: 1024px) {
+    @media (min-width: 1034px) {
       .admin-grid {
         grid-template-columns: 1.35fr 0.65fr;
       }
@@ -45,6 +46,98 @@
       from { opacity: 0; transform: translateY(-16px); }
       to { opacity: 1; transform: translateY(0); }
     }
+    .admin-metric-card {
+      transition: transform 0.18s ease;
+    }
+    .admin-metric-card:active {
+      transform: scale(0.985);
+    }
+    .admin-sync-card {
+      min-width: 0;
+    }
+    .admin-form-card,
+    .admin-panel-card {
+      transition: box-shadow 0.2s ease;
+    }
+    .admin-form-card:focus-within,
+    .admin-panel-card:focus-within {
+      box-shadow: 0 0 0 1px rgba(248,113,113,0.25);
+    }
+    .admin-modal-content {
+      max-height: calc(100vh - 3rem);
+      overflow-y: auto;
+    }
+    .admin-scroll-pane {
+      max-height: 480px;
+      overflow-y: auto;
+    }
+    .slim-scroll {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(148, 163, 184, 0.4) transparent;
+    }
+    .slim-scroll::-webkit-scrollbar {
+      width: 6px;
+    }
+    .slim-scroll::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .slim-scroll::-webkit-scrollbar-thumb {
+      background-color: rgba(148, 163, 184, 0.35);
+      border-radius: 9999px;
+    }
+    @media (max-width: 640px) {
+      body {
+        font-size: 0.95rem;
+      }
+      .admin-hero {
+        gap: 1.75rem;
+      }
+      .admin-sync-card {
+        width: 100%;
+        padding: 1.05rem 1.25rem;
+        border-radius: 1.2rem;
+      }
+      .admin-metric-card {
+        padding: 1.25rem;
+        border-radius: 1.2rem;
+      }
+      .admin-metric-card .text-3xl {
+        font-size: 1.9rem;
+      }
+      .admin-metric-card span.p-3 {
+        padding: 0.65rem;
+        border-radius: 0.9rem;
+      }
+      .admin-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.2rem;
+      }
+      .admin-form-card {
+        padding: 1.25rem;
+        border-radius: 1.25rem;
+      }
+      .admin-panel-card {
+        padding: 1.25rem;
+        border-radius: 1.25rem;
+      }
+      .admin-panel-card table {
+        font-size: 0.85rem;
+      }
+      .admin-panel-card th,
+      .admin-panel-card td {
+        padding-left: 0.35rem;
+        padding-right: 0.35rem;
+      }
+      .admin-modal-content {
+        padding: 1.75rem;
+        border-radius: 1.25rem;
+        max-height: calc(100vh - 1.5rem);
+      }
+      .admin-scroll-pane {
+        max-height: calc(100vh - 12rem) !important;
+      }
+    }
   </style>
 </head>
 <body class="bg-slate-950 text-gray-300 min-h-screen">
@@ -59,14 +152,14 @@
               <i class="fab fa-canadian-maple-leaf text-green-500 text-4xl"></i>
               <span class="e-logo absolute text-red-600 font-black italic text-3xl" style="top: 50%; left: 50%; transform: translate(-46%, -50%);">e</span>
             </div>
-            <span class="text-white font-bold text-xl">eMAS<span class="text-gray-400 font-semibold">2025</span></span>
+            <span class="text-white font-bold text-xl">MAS<span class="text-gray-400 font-semibold">2025</span></span>
           </a>
         </div>
         <nav class="hidden md:flex md:space-x-8 gp-navbar__links">
           <a href="index.html#about" class="text-gray-300 hover:text-white transition-colors duration-200">About</a>
           <a href="index.html#events" class="text-gray-300 hover:text-white transition-colors duration-200">Events</a>
                 
-          <a href="election.html" class="text-gray-300 hover:text-white transition-colors duration-200">Election</a>
+          <a href="election.html" data-election-link data-closed-label="Election Closed" class="text-gray-300 hover:text-white transition-colors duration-200">Election</a>
           <a href="admin.html" class="text-white font-semibold bg-red-600/20 px-3 py-1.5 rounded-lg transition-colors duration-200 active">Admin</a>
         </nav>
         <div class="md:hidden">
@@ -82,7 +175,7 @@
       <nav class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
         <a href="index.html#about" class="text-gray-300 hover:bg-slate-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">About</a>
         <a href="index.html#events" class="text-gray-300 hover:bg-slate-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Events</a>
-        <a href="election.html" class="text-gray-300 hover:bg-slate-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Election</a>
+  <a href="election.html" data-election-link data-closed-label="Election Closed" class="text-gray-300 hover:bg-slate-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Election</a>
         <a href="admin.html" class="text-white bg-red-600 hover:bg-red-700 block px-3 py-2 rounded-md text-base font-medium">Admin</a>
       </nav>
     </div>
@@ -93,7 +186,7 @@
     <!-- Hero -->
     <section class="hero-bg py-14">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+  <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 admin-hero">
           <div>
             <span class="inline-flex items-center gap-2 bg-red-600/10 text-red-400 px-4 py-2 rounded-full text-sm font-semibold mb-4">
               <i data-lucide="shield-check" class="w-4 h-4"></i>
@@ -102,7 +195,7 @@
             <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">EMAS <span class="gradient-text">Election Operations</span></h1>
             <p class="text-gray-400 max-w-2xl">Monitor live results, manage positions and candidates, and keep voter data up to date. This dashboard gives you everything you need to run EMAS Election 2025 smoothly.</p>
           </div>
-          <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-5 w-full lg:w-auto">
+          <div class="bg-slate-900/60 border border-slate-700 rounded-xl p-5 w-full lg:w-auto admin-sync-card">
             <p class="text-gray-400 text-sm mb-1">Last synced</p>
             <p class="text-white text-lg font-semibold" id="last-synced-at">--</p>
           </div>
@@ -114,7 +207,7 @@
     <section class="py-16 bg-slate-950">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
-          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-lg shadow-red-600/10">
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-lg shadow-red-600/10 admin-metric-card">
             <div class="flex items-center justify-between">
               <div>
                 <p class="text-sm text-gray-400">Registered Voters</p>
@@ -126,7 +219,7 @@
             </div>
             <p class="mt-3 text-xs text-gray-500">Voters stored in Firebase</p>
           </div>
-          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-lg shadow-red-600/10">
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-lg shadow-red-600/10 admin-metric-card">
             <div class="flex items-center justify-between">
               <div>
                 <p class="text-sm text-gray-400">Active Positions</p>
@@ -138,7 +231,7 @@
             </div>
             <p class="mt-3 text-xs text-gray-500">Managed through this panel</p>
           </div>
-          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-lg shadow-red-600/10">
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-lg shadow-red-600/10 admin-metric-card">
             <div class="flex items-center justify-between">
               <div>
                 <p class="text-sm text-gray-400">Candidates</p>
@@ -150,7 +243,7 @@
             </div>
             <p class="mt-3 text-xs text-gray-500">Across all positions</p>
           </div>
-          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-lg shadow-red-600/10">
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-lg shadow-red-600/10 admin-metric-card">
             <div class="flex items-center justify-between">
               <div>
                 <p class="text-sm text-gray-400">Votes Cast</p>
@@ -168,11 +261,36 @@
 
     <!-- Management Area -->
     <section class="py-8">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 admin-grid">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 admin-grid">
         <div class="space-y-8">
+          <!-- Election Status -->
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 admin-panel-card">
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between admin-card-header">
+              <div>
+                <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                  <i data-lucide="power" class="w-5 h-5 text-red-400"></i>
+                  Election Status
+                </h2>
+                <p id="election-status-text" class="text-sm text-gray-400 mt-1">Voting is currently closed. Participants can only view positions and candidates.</p>
+                <p id="election-status-updated" class="text-xs text-gray-500 mt-2 hidden"></p>
+              </div>
+              <div class="flex flex-col sm:items-end gap-2">
+                <span id="election-status-badge" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-800 text-gray-300">
+                  <span class="w-2 h-2 rounded-full bg-red-500"></span>
+                  Closed
+                </span>
+                <button id="toggle-election-button" class="inline-flex items-center gap-2 text-sm font-semibold text-white bg-red-600 hover:bg-red-700 px-4 py-2.5 rounded-lg transition">
+                  <i data-lucide="play" class="w-4 h-4"></i>
+                  Start election
+                </button>
+              </div>
+            </div>
+            <p class="mt-4 text-xs text-gray-500">Toggle this switch to open or pause voting. When closed, voters can browse positions but cannot submit ballots.</p>
+          </div>
+
           <!-- Position Management -->
-          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 admin-panel-card">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 admin-card-header">
               <div>
                 <h2 class="text-2xl font-bold text-white">Position Management</h2>
                 <p class="text-gray-400 text-sm">Create, update, and organise leadership roles for the election.</p>
@@ -184,7 +302,7 @@
             </div>
 
             <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
-              <form id="add-position-form" class="space-y-4 bg-slate-900/60 border border-slate-800 rounded-xl p-4">
+              <form id="add-position-form" class="space-y-4 bg-slate-900/60 border border-slate-800 rounded-xl p-4 admin-form-card">
                 <div class="flex items-center gap-2 text-sm font-semibold text-gray-300">
                   <i data-lucide="plus-circle" class="w-4 h-4"></i>
                   New Position
@@ -210,7 +328,7 @@
                 <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg px-4 py-2.5 transition">Create Position</button>
               </form>
 
-              <form id="add-candidate-form" class="space-y-4 bg-slate-900/60 border border-slate-800 rounded-xl p-4">
+              <form id="add-candidate-form" class="space-y-4 bg-slate-900/60 border border-slate-800 rounded-xl p-4 admin-form-card">
                 <div class="flex items-center gap-2 text-sm font-semibold text-gray-300">
                   <i data-lucide="user-plus" class="w-4 h-4"></i>
                   Add Candidate
@@ -240,8 +358,8 @@
           </div>
 
           <!-- Positions List -->
-          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
-            <div class="flex items-center justify-between mb-6">
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 admin-panel-card">
+            <div class="flex items-center justify-between mb-6 admin-card-header">
               <h3 class="text-xl font-semibold text-white">Active Positions</h3>
               <span class="text-sm text-gray-500" id="positions-count">0 items</span>
             </div>
@@ -251,12 +369,12 @@
           </div>
 
           <!-- Votes Overview -->
-          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
-            <div class="flex items-center justify-between mb-6">
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 admin-panel-card">
+            <div class="flex items-center justify-between mb-6 admin-card-header">
               <h3 class="text-xl font-semibold text-white">Live Vote Totals</h3>
               <span class="text-sm text-gray-500" id="votes-last-updated">--</span>
             </div>
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto overflow-y-auto max-h-80 lg:max-h-96 slim-scroll">
               <table class="min-w-full divide-y divide-slate-800">
                 <thead>
                   <tr class="text-xs uppercase text-gray-500 text-left">
@@ -273,13 +391,30 @@
               </table>
             </div>
           </div>
+
+          <!-- Election Results -->
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 admin-panel-card">
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6 admin-card-header">
+              <div>
+                <h3 class="text-xl font-semibold text-white">Election Results</h3>
+                <p class="text-sm text-gray-400">Calculate winners per position using the latest vote data.</p>
+              </div>
+              <button id="show-results-button" class="inline-flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold px-4 py-2.5 rounded-lg transition">
+                <i data-lucide="award" class="w-4 h-4"></i>
+                Show results
+              </button>
+            </div>
+            <div id="results-container" class="space-y-4">
+              <p class="text-sm text-gray-500">Click “Show results” to calculate standings for each position.</p>
+            </div>
+          </div>
         </div>
 
         <!-- Sidebar -->
         <div class="space-y-8">
-          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 admin-panel-card">
             <h3 class="text-xl font-semibold text-white mb-4">Recent Voter Registrations</h3>
-            <div class="overflow-y-auto max-h-[380px]" id="voters-list">
+            <div class="overflow-y-auto max-h-[380px] admin-scroll-pane slim-scroll" id="voters-list">
               <p class="text-sm text-gray-500">As soon as students register on the election page, their details will appear here.</p>
             </div>
           </div>
@@ -311,7 +446,7 @@
   <div id="manage-candidates-modal" class="fixed inset-0 z-[90] hidden">
     <div class="modal-backdrop fixed inset-0 bg-black/70 backdrop-blur-sm" onclick="closeCandidateManager()"></div>
     <div class="fixed inset-0 flex items-center justify-center p-4 overflow-y-auto">
-      <div class="modal-content bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl max-w-3xl w-full p-6 relative">
+  <div class="modal-content bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl max-w-3xl w-full p-6 relative admin-modal-content">
         <button onclick="closeCandidateManager()" class="absolute top-4 right-4 text-gray-400 hover:text-white transition">
           <i data-lucide="x" class="w-6 h-6"></i>
         </button>
@@ -320,7 +455,51 @@
           <h3 class="text-2xl font-bold text-white" id="manage-candidates-title"></h3>
           <p class="text-gray-500 text-sm" id="manage-candidates-description"></p>
         </div>
-        <div id="manage-candidates-list" class="space-y-4 max-h-[480px] overflow-y-auto pr-1"></div>
+  <div id="manage-candidates-list" class="space-y-4 max-h-[480px] overflow-y-auto pr-1 admin-scroll-pane"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Candidate Modal -->
+  <div id="edit-candidate-modal" class="fixed inset-0 z-[95] hidden">
+    <div class="modal-backdrop fixed inset-0 bg-black/70 backdrop-blur-sm" onclick="closeEditCandidateModal()"></div>
+    <div class="fixed inset-0 flex items-center justify-center p-4 overflow-y-auto">
+      <div class="modal-content bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl max-w-xl w-full p-6 relative admin-modal-content">
+        <button onclick="closeEditCandidateModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white transition">
+          <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
+        <div class="mb-6">
+          <span class="text-xs uppercase tracking-wide text-gray-500">Update candidate</span>
+          <h3 class="text-2xl font-bold text-white">Edit candidate details</h3>
+          <p class="text-gray-500 text-sm">Modify the information visible to voters. Changes appear instantly on the election page.</p>
+        </div>
+        <form id="edit-candidate-form" class="space-y-4">
+          <input type="hidden" id="edit-candidate-position">
+          <input type="hidden" id="edit-candidate-id">
+          <div>
+            <label for="edit-candidate-name" class="block text-xs uppercase tracking-wide text-gray-400 mb-1">Candidate name</label>
+            <input id="edit-candidate-name" type="text" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-red-500" required>
+          </div>
+          <div>
+            <label for="edit-candidate-image" class="block text-xs uppercase tracking-wide text-gray-400 mb-1">Photo URL</label>
+            <input id="edit-candidate-image" type="url" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="https://...">
+            <p class="text-xs text-gray-500 mt-1">Leave blank to use the auto-generated avatar.</p>
+          </div>
+          <div>
+            <label for="edit-candidate-manifesto" class="block text-xs uppercase tracking-wide text-gray-400 mb-1">Manifesto</label>
+            <textarea id="edit-candidate-manifesto" rows="3" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="Key focus areas or bio"></textarea>
+          </div>
+          <div class="flex flex-col sm:flex-row sm:justify-end gap-3 pt-2">
+            <button type="button" onclick="closeEditCandidateModal()" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-sm font-semibold text-gray-200 px-4 py-2.5 rounded-lg transition">
+              <i data-lucide="x-circle" class="w-4 h-4"></i>
+              Cancel
+            </button>
+            <button type="submit" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-sm font-semibold text-white px-4 py-2.5 rounded-lg transition">
+              <i data-lucide="save" class="w-4 h-4"></i>
+              Save changes
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
@@ -329,7 +508,7 @@
   <div id="edit-position-modal" class="fixed inset-0 z-[95] hidden">
     <div class="modal-backdrop fixed inset-0 bg-black/70 backdrop-blur-sm" onclick="closeEditPositionModal()"></div>
     <div class="fixed inset-0 flex items-center justify-center p-4 overflow-y-auto">
-      <div class="modal-content bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl max-w-xl w-full p-6 relative">
+  <div class="modal-content bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl max-w-xl w-full p-6 relative admin-modal-content">
         <button onclick="closeEditPositionModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white transition">
           <i data-lucide="x" class="w-6 h-6"></i>
         </button>
@@ -404,5 +583,30 @@
     lucide.createIcons();
   </script>
   <script type="module" src="./admin.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      try {
+        const storedCompletionRoll = localStorage.getItem('emasVoteComplete');
+        const voterDataRaw = localStorage.getItem('emasVoter');
+
+        if (storedCompletionRoll && voterDataRaw) {
+          const voter = JSON.parse(voterDataRaw);
+          if (voter?.roll && voter.roll === storedCompletionRoll) {
+            document.querySelectorAll('[data-election-link]').forEach((link) => {
+              const closedLabel = link.dataset.closedLabel || 'Election Closed';
+              link.classList.add('pointer-events-none', 'cursor-not-allowed', 'opacity-60');
+              link.setAttribute('aria-disabled', 'true');
+              if (!link.dataset.originalLabel) {
+                link.dataset.originalLabel = link.textContent.trim();
+              }
+              link.textContent = closedLabel;
+            });
+          }
+        }
+      } catch (error) {
+        console.warn('Election link lock failed', error);
+      }
+    });
+  </script>
 </body>
 </html>

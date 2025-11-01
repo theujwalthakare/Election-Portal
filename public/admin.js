@@ -14,7 +14,7 @@ const ADMIN_CREDENTIALS = {
   password: "vote2025!"
 };
 const ADMIN_SESSION_KEY = "emasAdminSession";
-const SESSION_DURATION_MS = 1000 * 60 * 60 * 6; // 6 hours
+const SESSION_DURATION_MS = 1000 * 60 * 60 * 2; // 2 hours
 
 const state = {
   positions: {},
@@ -22,7 +22,9 @@ const state = {
   votes: {},
   listenersAttached: false,
   currentPositionManaging: null,
-  currentPositionEditing: null
+  currentPositionEditing: null,
+  currentCandidateEditing: null,
+  settings: {}
 };
 
 const selectors = {
@@ -38,11 +40,24 @@ const selectors = {
   positionsList: document.getElementById("positions-list"),
   votersList: document.getElementById("voters-list"),
   votesTableBody: document.getElementById("votes-table-body"),
+  showResultsButton: document.getElementById("show-results-button"),
+  resultsContainer: document.getElementById("results-container"),
   candidateSelect: document.getElementById("candidate-position"),
   candidateModal: document.getElementById("manage-candidates-modal"),
   candidateModalTitle: document.getElementById("manage-candidates-title"),
   candidateModalDescription: document.getElementById("manage-candidates-description"),
   candidateModalList: document.getElementById("manage-candidates-list"),
+  editCandidateModal: document.getElementById("edit-candidate-modal"),
+  editCandidateForm: document.getElementById("edit-candidate-form"),
+  editCandidatePosition: document.getElementById("edit-candidate-position"),
+  editCandidateId: document.getElementById("edit-candidate-id"),
+  editCandidateName: document.getElementById("edit-candidate-name"),
+  editCandidateImage: document.getElementById("edit-candidate-image"),
+  editCandidateManifesto: document.getElementById("edit-candidate-manifesto"),
+  electionStatusBadge: document.getElementById("election-status-badge"),
+  electionStatusText: document.getElementById("election-status-text"),
+  electionStatusUpdated: document.getElementById("election-status-updated"),
+  toggleElectionButton: document.getElementById("toggle-election-button"),
   editPositionModal: document.getElementById("edit-position-modal"),
   editPositionForm: document.getElementById("edit-position-form"),
   editPositionSlug: document.getElementById("edit-position-slug"),
@@ -67,6 +82,7 @@ const selectors = {
 const positionsRef = ref(db, "positions");
 const votesRef = ref(db, "votes");
 const votersRef = ref(db, "voters");
+const settingsRef = ref(db, "settings");
 
 const slugify = (text) => text
   .toLowerCase()
@@ -164,6 +180,13 @@ function hideAuthModal() {
 function attachRealtimeListeners() {
   if (state.listenersAttached) return;
   state.listenersAttached = true;
+
+  onValue(settingsRef, (snapshot) => {
+    state.settings = snapshot.val() || {};
+    renderElectionStatus();
+  }, (error) => {
+    console.error("Failed to load settings:", error);
+  });
 
   onValue(positionsRef, (snapshot) => {
     state.positions = snapshot.val() || {};
@@ -460,8 +483,7 @@ function renderVoters() {
       ...voter,
       registeredAt: voter.registeredAt ?? 0
     }))
-    .sort((a, b) => (b.registeredAt || 0) - (a.registeredAt || 0))
-    .slice(0, 12);
+    .sort((a, b) => (b.registeredAt || 0) - (a.registeredAt || 0));
 
   if (entries.length === 0) {
     selectors.votersList.innerHTML = '<p class="text-sm text-gray-500">No voters have registered yet.</p>';
@@ -533,6 +555,263 @@ function renderVotes() {
   selectors.votesTableBody.innerHTML = rows.join("\n");
 }
 
+function renderElectionStatus() {
+  if (!selectors.toggleElectionButton || !selectors.electionStatusBadge || !selectors.electionStatusText) {
+    return;
+  }
+
+  const isLive = Boolean(state.settings.electionLive);
+  const updatedAt = state.settings.electionUpdatedAt;
+
+  const badge = selectors.electionStatusBadge;
+  badge.classList.toggle("bg-emerald-500/10", isLive);
+  badge.classList.toggle("text-emerald-200", isLive);
+  badge.classList.toggle("bg-slate-800", !isLive);
+  badge.classList.toggle("text-gray-300", !isLive);
+  badge.innerHTML = `
+    <span class="w-2 h-2 rounded-full ${isLive ? "bg-emerald-400 animate-pulse" : "bg-red-500"}"></span>
+    ${isLive ? "Live" : "Closed"}
+  `;
+
+  selectors.electionStatusText.textContent = isLive
+    ? "Voting is live. Students can cast ballots for all published positions."
+    : "Voting is currently closed. Participants can only view positions and candidates.";
+
+  if (selectors.electionStatusUpdated) {
+    if (updatedAt) {
+      selectors.electionStatusUpdated.textContent = `Last changed ${formatDateTime(updatedAt)}`;
+      selectors.electionStatusUpdated.classList.remove("hidden");
+    } else {
+      selectors.electionStatusUpdated.textContent = "";
+      selectors.electionStatusUpdated.classList.add("hidden");
+    }
+  }
+
+  const button = selectors.toggleElectionButton;
+  button.disabled = false;
+  button.setAttribute("data-live", String(isLive));
+
+  button.classList.toggle("bg-red-600", !isLive);
+  button.classList.toggle("hover:bg-red-700", !isLive);
+  button.classList.toggle("text-white", !isLive);
+
+  button.classList.toggle("bg-slate-800", isLive);
+  button.classList.toggle("hover:bg-slate-700", isLive);
+  button.classList.toggle("text-gray-200", isLive);
+
+  button.innerHTML = isLive
+    ? '<i data-lucide="pause-circle" class="w-4 h-4"></i> Pause election'
+    : '<i data-lucide="play" class="w-4 h-4"></i> Start election';
+
+  ensureIcons();
+}
+
+function calculateElectionResults() {
+  const positionKeys = new Set([
+    ...Object.keys(state.positions || {}),
+    ...Object.keys(state.votes || {})
+  ]);
+
+  return Array.from(positionKeys).map((positionKey) => {
+    const position = state.positions[positionKey] || {};
+    const seatCount = Number(position.availableSeats) || 1;
+    const voteEntries = Object.values(state.votes[positionKey] || {});
+    const normalisedVotes = voteEntries.flatMap((entry) => normaliseVoteEntry(entry));
+    const totalVotes = normalisedVotes.length;
+
+    const candidateIndex = new Map();
+    Object.values(position.candidates || {}).forEach((candidate) => {
+      if (!candidate) return;
+      const candidateKey = candidate.id || candidate.name || "candidate";
+      candidateIndex.set(candidateKey, candidate);
+    });
+
+    const tally = new Map();
+
+    normalisedVotes.forEach((vote) => {
+      const candidateKey = vote.candidateId || vote.candidateName || "unknown";
+      const candidateRecord = candidateIndex.get(candidateKey);
+      const candidateName = candidateRecord?.name || vote.candidateName || candidateKey;
+
+      if (!tally.has(candidateKey)) {
+        tally.set(candidateKey, {
+          candidateId: candidateKey,
+          candidateName,
+          total: 0
+        });
+      }
+
+      tally.get(candidateKey).total += 1;
+    });
+
+    candidateIndex.forEach((candidate, candidateKey) => {
+      if (!tally.has(candidateKey)) {
+        tally.set(candidateKey, {
+          candidateId: candidateKey,
+          candidateName: candidate.name || candidateKey,
+          total: 0
+        });
+      }
+    });
+
+    const sortedCandidates = Array.from(tally.values()).sort((a, b) => {
+      if (b.total !== a.total) {
+        return b.total - a.total;
+      }
+      return a.candidateName.localeCompare(b.candidateName);
+    });
+
+    return {
+      positionKey,
+      positionTitle: position.title || positionKey,
+      seatCount,
+      totalVotes,
+      candidates: sortedCandidates,
+      hasCandidates: (position.candidates && Object.keys(position.candidates).length > 0) || sortedCandidates.length > 0
+    };
+  }).sort((a, b) => a.positionTitle.localeCompare(b.positionTitle));
+}
+
+function handleShowResults() {
+  if (!selectors.resultsContainer) {
+    return;
+  }
+
+  const results = calculateElectionResults();
+
+  if (results.length === 0) {
+    selectors.resultsContainer.innerHTML = '<p class="text-sm text-gray-500">Add positions to see calculated results.</p>';
+    return;
+  }
+
+  const computedAt = formatDateTime(Date.now());
+
+  const markup = results.map((result) => {
+    if (!result.hasCandidates) {
+      return `
+        <div class="border border-slate-800 rounded-xl p-4 bg-slate-900/60">
+          <div class="flex items-center justify-between gap-3">
+            <h4 class="text-lg font-semibold text-white">${result.positionTitle}</h4>
+            <span class="text-xs text-gray-500">Total votes: ${result.totalVotes}</span>
+          </div>
+          <p class="mt-3 text-sm text-gray-500">No candidates registered for this position yet.</p>
+        </div>
+      `;
+    }
+
+    if (result.candidates.length === 0) {
+      return `
+        <div class="border border-slate-800 rounded-xl p-4 bg-slate-900/60">
+          <div class="flex items-center justify-between gap-3">
+            <h4 class="text-lg font-semibold text-white">${result.positionTitle}</h4>
+            <span class="text-xs text-gray-500">Total votes: ${result.totalVotes}</span>
+          </div>
+          <p class="mt-3 text-sm text-gray-500">No votes recorded for this position yet.</p>
+        </div>
+      `;
+    }
+
+    const listItems = result.candidates.map((candidate, index) => {
+      const isWinner = result.totalVotes > 0 && index < result.seatCount;
+      const percentLabel = result.totalVotes > 0
+        ? `${((candidate.total / result.totalVotes) * 100).toFixed(1)}%`
+        : "--";
+
+      return `
+        <li class="flex items-center justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <span class="w-7 h-7 rounded-full bg-slate-800 text-gray-300 text-xs font-semibold flex items-center justify-center">${index + 1}</span>
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-medium ${isWinner ? 'text-white' : 'text-gray-300'}">${candidate.candidateName}</span>
+              ${isWinner ? '<span class="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-300 bg-emerald-500/10 px-2 py-0.5 rounded-full"><i data-lucide="crown" class="w-3 h-3"></i>Winner</span>' : ''}
+            </div>
+          </div>
+          <div class="text-right text-sm">
+            <span class="text-base font-semibold text-white">${candidate.total}</span>
+            <span class="ml-2 text-xs text-gray-500">${percentLabel}</span>
+          </div>
+        </li>
+      `;
+    }).join("\n");
+
+    return `
+      <div class="border border-slate-800 rounded-xl p-4 bg-slate-900/60 space-y-3">
+        <div class="flex items-center justify-between gap-3">
+          <h4 class="text-lg font-semibold text-white">${result.positionTitle}</h4>
+          <span class="text-xs text-gray-500">Total votes: ${result.totalVotes}</span>
+        </div>
+        <ul class="space-y-2">
+          ${listItems}
+        </ul>
+        <p class="text-xs text-gray-500">Seats available: ${result.seatCount} ${result.seatCount === 1 ? "seat" : "seats"}.</p>
+      </div>
+    `;
+  }).join("\n");
+
+  selectors.resultsContainer.innerHTML = `${markup}
+    <p class="text-xs text-gray-500">Calculated at ${computedAt}.</p>`;
+
+  ensureIcons();
+}
+
+async function handleToggleElection() {
+  if (!selectors.toggleElectionButton) {
+    return;
+  }
+
+  const isLive = Boolean(state.settings.electionLive);
+  const nextState = !isLive;
+
+  const confirmation = await Swal.fire({
+    icon: "question",
+    title: nextState ? "Start election?" : "Pause election?",
+    text: nextState
+      ? "Students will immediately be able to cast votes for all positions."
+      : "Students will no longer be able to submit votes until you resume.",
+    showCancelButton: true,
+    confirmButtonColor: nextState ? "#22c55e" : "#f97316",
+    cancelButtonColor: "#4b5563",
+    confirmButtonText: nextState ? "Start voting" : "Pause voting",
+    background: "#0f172a",
+    color: "#e2e8f0"
+  });
+
+  if (!confirmation.isConfirmed) {
+    return;
+  }
+
+  try {
+    selectors.toggleElectionButton.disabled = true;
+    await update(settingsRef, {
+      electionLive: nextState,
+      electionUpdatedAt: Date.now()
+    });
+
+    await Swal.fire({
+      icon: "success",
+      title: nextState ? "Election started" : "Election paused",
+      text: nextState
+        ? "Voting is now open for all registered students."
+        : "Voting has been paused. Students can continue browsing positions but cannot vote.",
+      timer: 1800,
+      showConfirmButton: false,
+      background: "#0f172a",
+      color: "#e2e8f0"
+    });
+  } catch (error) {
+    console.error("Failed to toggle election status", error);
+    await Swal.fire({
+      icon: "error",
+      title: "Action failed",
+      text: "Could not update the election status. Please try again.",
+      background: "#0f172a",
+      color: "#e2e8f0"
+    });
+  } finally {
+    selectors.toggleElectionButton.disabled = false;
+  }
+}
+
 function updateStats() {
   const totalVoters = Object.keys(state.voters).length;
   const totalPositions = Object.keys(state.positions).length;
@@ -599,10 +878,16 @@ function openCandidateManager(positionKey) {
                     <p class="text-[11px] text-gray-500 mt-2">Added ${formatDateTime(candidate.createdAt)}</p>
                 </div>
             </div>
-            <button class="inline-flex items-center gap-2 text-sm font-semibold text-red-400 bg-slate-800/70 hover:bg-slate-800 px-4 py-2 rounded-lg transition" data-action="delete-candidate" data-position="${positionKey}" data-candidate="${candidate.id}" data-name="${candidate.name}">
-                <i data-lucide="trash" class="w-4 h-4"></i>
-                Remove
-            </button>
+      <div class="flex flex-wrap items-center justify-end gap-2">
+        <button class="inline-flex items-center gap-2 text-sm font-semibold text-gray-200 bg-slate-800/70 hover:bg-slate-800 px-4 py-2 rounded-lg transition" data-action="edit-candidate" data-position="${positionKey}" data-candidate="${candidate.id}">
+          <i data-lucide="pencil" class="w-4 h-4"></i>
+          Edit
+        </button>
+        <button class="inline-flex items-center gap-2 text-sm font-semibold text-red-400 bg-slate-800/70 hover:bg-slate-800 px-4 py-2 rounded-lg transition" data-action="delete-candidate" data-position="${positionKey}" data-candidate="${candidate.id}" data-name="${candidate.name}">
+          <i data-lucide="trash" class="w-4 h-4"></i>
+          Remove
+        </button>
+      </div>
         </div>
       `)
       .join("\n");
@@ -617,6 +902,97 @@ window.closeCandidateManager = function closeCandidateManager() {
   selectors.candidateModalList.innerHTML = "";
   state.currentPositionManaging = null;
 };
+
+function openEditCandidateModal(positionKey, candidateId) {
+  const position = state.positions[positionKey];
+  const candidate = position?.candidates?.[candidateId];
+  if (!position || !candidate) {
+    return;
+  }
+
+  state.currentCandidateEditing = { positionKey, candidateId };
+
+  selectors.editCandidatePosition.value = positionKey;
+  selectors.editCandidateId.value = candidateId;
+  selectors.editCandidateName.value = candidate.name ?? "";
+  selectors.editCandidateImage.value = candidate.image ?? "";
+  selectors.editCandidateManifesto.value = candidate.manifesto ?? "";
+
+  selectors.editCandidateModal.classList.remove("hidden");
+  ensureIcons();
+}
+
+window.closeEditCandidateModal = function closeEditCandidateModal() {
+  selectors.editCandidateModal.classList.add("hidden");
+  selectors.editCandidateForm.reset();
+  selectors.editCandidatePosition.value = "";
+  selectors.editCandidateId.value = "";
+  state.currentCandidateEditing = null;
+};
+
+async function handleUpdateCandidate(event) {
+  event.preventDefault();
+
+  const positionKey = selectors.editCandidatePosition.value;
+  const candidateId = selectors.editCandidateId.value;
+
+  const name = selectors.editCandidateName.value.trim();
+  const imageRaw = selectors.editCandidateImage.value.trim();
+  const manifesto = selectors.editCandidateManifesto.value.trim();
+
+  if (!positionKey || !candidateId) {
+    window.closeEditCandidateModal();
+    return;
+  }
+
+  if (!name) {
+    await Swal.fire({
+      icon: "warning",
+      title: "Name required",
+      text: "Please provide the candidate's name.",
+      background: "#0f172a",
+      color: "#e2e8f0"
+    });
+    return;
+  }
+
+  const fallbackImage = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(name)}`;
+  const image = imageRaw || fallbackImage;
+
+  try {
+    await update(ref(db, `positions/${positionKey}/candidates/${candidateId}`), {
+      name,
+      image,
+      manifesto,
+      updatedAt: Date.now()
+    });
+
+    window.closeEditCandidateModal();
+
+    await Swal.fire({
+      icon: "success",
+      title: "Candidate updated",
+      text: `${name} has been updated successfully.`,
+      timer: 1600,
+      showConfirmButton: false,
+      background: "#0f172a",
+      color: "#e2e8f0"
+    });
+
+    if (state.currentPositionManaging === positionKey) {
+      openCandidateManager(positionKey);
+    }
+  } catch (error) {
+    console.error("Failed to update candidate", error);
+    await Swal.fire({
+      icon: "error",
+      title: "Update failed",
+      text: "Something went wrong while saving changes. Please try again.",
+      background: "#0f172a",
+      color: "#e2e8f0"
+    });
+  }
+}
 
 async function handleUpdatePosition(event) {
   event.preventDefault();
@@ -880,11 +1256,21 @@ function handlePositionsListClick(event) {
 }
 
 function handleCandidateModalClick(event) {
-  const button = event.target.closest("button[data-action='delete-candidate']");
+  const button = event.target.closest("button[data-action]");
   if (!button) return;
-  const { position: positionKey, candidate: candidateId, name } = button.dataset;
-  if (positionKey && candidateId) {
+  const { action, position: positionKey, candidate: candidateId, name } = button.dataset;
+
+  if (!positionKey || !candidateId) {
+    return;
+  }
+
+  if (action === "delete-candidate") {
     deleteCandidate(positionKey, candidateId, name || "this candidate");
+    return;
+  }
+
+  if (action === "edit-candidate") {
+    openEditCandidateModal(positionKey, candidateId);
   }
 }
 
@@ -920,12 +1306,15 @@ function initialiseEvents() {
   selectors.addPositionForm.addEventListener("submit", handleAddPosition);
   selectors.addCandidateForm.addEventListener("submit", handleAddCandidate);
   selectors.editPositionForm.addEventListener("submit", handleUpdatePosition);
+  selectors.editCandidateForm.addEventListener("submit", handleUpdateCandidate);
   selectors.positionsList.addEventListener("click", handlePositionsListClick);
   selectors.candidateModalList.addEventListener("click", handleCandidateModalClick);
   selectors.refreshButton.addEventListener("click", handleRefresh);
   selectors.exportVotesButton.addEventListener("click", exportVotesAsCsv);
   selectors.clearSessionButton.addEventListener("click", handleSignOut);
   selectors.eraseElectionDataButton.addEventListener("click", handleEraseElectionData);
+  selectors.showResultsButton?.addEventListener("click", handleShowResults);
+  selectors.toggleElectionButton?.addEventListener("click", handleToggleElection);
 }
 
 function bootstrap() {
